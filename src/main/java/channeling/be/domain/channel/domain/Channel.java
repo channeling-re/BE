@@ -1,8 +1,10 @@
 package channeling.be.domain.channel.domain;
 
+import channeling.be.domain.channel.application.model.Stats;
 import channeling.be.domain.common.BaseEntity;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.video.domain.VideoCategory;
+import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,19 +36,19 @@ public class Channel extends BaseEntity {
     @Column(nullable = false)
     private Long view; // 조회수
 
-    @Column(nullable = false)
+    @Column()
     private Long likeCount; // 좋아요 수
 
     @Column(nullable = false)
     private Long subscribe; // 구독자 수
 
-    @Column(nullable = false)
+    @Column
     private Long share; // 공유 수
 
     @Column(nullable = false)
     private Long videoCount; // 영상 수
 
-    @Column(nullable = false)
+    @Column
     private Long comment; // 체널 총 댓글 수
 
     @Column(nullable = false, length = 150)
@@ -55,10 +57,10 @@ public class Channel extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime joinDate; // 채널 가입일
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String target; // 시청자 타겟
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 500)
     private String concept; // 채널 컨셉
 
     @Column(nullable = false, length = 255)
@@ -100,5 +102,18 @@ public class Channel extends BaseEntity {
         this.channelUpdateAt = LocalDateTime.now();
         this.channelHashTag = VideoCategory.ofId(topCategoryId);
         this.share=shares;
+    }
+
+    // 유튜브 채널 정보 업데이트
+    public void updateByYoutube(YoutubeChannelResDTO.Item item) {
+        this.name = item.getSnippet().getTitle();
+        this.youtubeChannelId = item.getId();
+        this.youtubePlaylistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+        this.image = item.getSnippet().getThumbnails().getDefaultThumbnail().getUrl();
+        this.link = "https://www.youtube.com/channel/" + item.getId();
+        this.joinDate = item.getSnippet().getPublishedAt();
+        this.view = item.getStatistics().getViewCount();
+        this.subscribe = item.getStatistics().getSubscriberCount();
+        this.videoCount = item.getStatistics().getVideoCount();
     }
 }

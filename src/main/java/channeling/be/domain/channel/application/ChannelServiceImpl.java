@@ -104,31 +104,30 @@ public class ChannelServiceImpl implements ChannelService {
 	@Override
 	@Transactional
 	public Channel updateOrCreateChannelByMember(Member member) {
-		Optional<Channel> channel = channelRepository.findByMember(member);
+		Optional<Channel> channelOp = channelRepository.findByMember(member);
 		String googleAccessToken = redisUtil.getGoogleAccessToken(member.getId());
 
-
 		// 유튜브 채널 정보 가져오기
-		YoutubeChannelResDTO.Item item = YoutubeUtil.getChannelDetails(
-			redisUtil.getGoogleAccessToken(member.getId()));
-        long shares=YoutubeUtil.getAllVideoShares(googleAccessToken, item.getSnippet().getPublishedAt(),LocalDateTime.now());
-		String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+		YoutubeChannelResDTO.Item item = YoutubeUtil.getChannelDetails(googleAccessToken);
+//        long shares=YoutubeUtil.getAllVideoShares(googleAccessToken, item.getSnippet().getPublishedAt(),LocalDateTime.now());
+//		String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+//
+//		//유튜브 비디오 데이터 가져오기
+//		YoutubeChannelVideoData data = fetchYoutubeVideoData(item, googleAccessToken, playlistId);
+//
+//		//유튜브 비디오 데이터(data.details)의 각 요소의 category id 의 count를 세서 가장 높은 카테고리 추출
+//		String topCategoryId = getTopCategoryId(data);
 
-		//유튜브 비디오 데이터 가져오기
-		YoutubeChannelVideoData data = fetchYoutubeVideoData(item, googleAccessToken, playlistId);
+		// 채널 없으면 생성, 있으면 업데이트
+		Channel channel = null;
+		if (channelOp.isEmpty()) {
+			channel = channelRepository.save(ChannelConverter.toNewChannel(item, member);
+		} else {
+			channel = channelOp.get();
+			channel.updateByYoutube(item);
+		}
 
-		//유튜브 비디오 데이터(data.details)의 각 요소의 category id 의 count를 세서 가장 높은 카테고리 추출
-		String topCategoryId = getTopCategoryId(data);
-
-		//채널이 없으면 기본 1차 저장
-		Channel channelEntity = channel.orElseGet(() ->
-			channelRepository.save(ChannelConverter.toNewChannel(data.item, member,shares,topCategoryId))
-		);
-
-		Stats stats=updateVideosAndAccumulateStats(data.briefs, data.details, channelEntity);
-		ChannelConverter.updateChannel(channelEntity, data.item, topCategoryId,stats,shares);
-		return channelRepository.save(channelEntity);
-
+		return channel;
 	}
 
 	private String getTopCategoryId(YoutubeChannelVideoData data) {

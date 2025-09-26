@@ -43,7 +43,7 @@ public class YoutubeUtil {
         try {
             log.info("googleAccessToken: {}", accessToken);
             String response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
-            log.info("Response: {}", response);
+            log.info("1 Channel Response: {}", response);
             YoutubeChannelResDTO youtubeResponse = mapper.readValue(response, YoutubeChannelResDTO.class);
             return youtubeResponse.getItems().get(0); // 채널 정보가 담긴 첫 번째 아이템 반환
         } catch (Exception e) {

@@ -67,4 +67,26 @@ public class ChannelConverter {
             .build();
     }
 
+    public static Channel toNewChannel(YoutubeChannelResDTO.Item item, Member member) {
+        return Channel.builder()
+                .name(item.getSnippet().getTitle())
+                .youtubeChannelId(item.getId())
+                .youtubePlaylistId(item.getContentDetails().getRelatedPlaylists().getUploads())
+                .image(item.getSnippet().getThumbnails().getDefaultThumbnail().getUrl())
+                .link("https://www.youtube.com/channel/" + item.getId())
+                .joinDate(item.getSnippet().getPublishedAt())
+                .view(item.getStatistics().getViewCount())
+                .subscribe(item.getStatistics().getSubscriberCount())
+                .videoCount(item.getStatistics().getVideoCount())
+                .member(member)
+                .target(null)
+                .concept(null)
+                .likeCount(null)
+                .comment(null)
+                .share(null)
+                .channelHashTag(null)
+                .channelUpdateAt(LocalDateTime.now())
+                .build();
+    }
+
 }
