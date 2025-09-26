@@ -48,7 +48,7 @@ public class ChannelServiceImpl implements ChannelService {
 
 	@AllArgsConstructor
 	@Getter
-	private static class YoutubeChannelVideoData {
+	public static class YoutubeChannelVideoData {
 		YoutubeChannelResDTO.Item item;
 		List<YoutubeVideoBriefDTO> briefs;
 		List<YoutubeVideoDetailDTO> details;
@@ -121,7 +121,7 @@ public class ChannelServiceImpl implements ChannelService {
 		// 채널 없으면 생성, 있으면 업데이트
 		Channel channel = null;
 		if (channelOp.isEmpty()) {
-			channel = channelRepository.save(ChannelConverter.toNewChannel(item, member);
+			channel = channelRepository.save(ChannelConverter.toNewChannel(item, member));
 		} else {
 			channel = channelOp.get();
 			channel.updateByYoutube(item);

@@ -1,5 +1,30 @@
 package channeling.be.infrastructure.youtube;
 
+import channeling.be.domain.channel.application.ChannelServiceImpl;
+import channeling.be.domain.channel.application.model.Stats;
+import channeling.be.domain.channel.domain.Channel;
+import channeling.be.domain.channel.domain.repository.ChannelRepository;
+import channeling.be.domain.video.application.VideoService;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoListResDTO;
+import channeling.be.infrastructure.youtube.dto.res.YoutubeAnalyticsResDTO;
+import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
+import channeling.be.infrastructure.youtube.dto.res.YoutubePlayListResDTO;
+import channeling.be.response.code.status.ErrorStatus;
+import channeling.be.response.exception.handler.YoutubeHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -7,29 +32,114 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import channeling.be.infrastructure.youtube.dto.res.YoutubeAnalyticsResDTO;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoListResDTO;
-import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
-import channeling.be.infrastructure.youtube.dto.res.YoutubePlayListResDTO;
-import channeling.be.response.code.status.ErrorStatus;
-import channeling.be.response.exception.handler.YoutubeHandler;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class YoutubeUtil {
-    //HTTP 요청을
-    //유튜브 API에 요청하기 위한 유틸리티 클래스
+    // HTTP 요청을 유튜브 API에 요청하기 위한 유틸리티 클래스
+
+    private final RestTemplate restTemplate;
+    private final VideoService videoService;
 
     private static final String YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";
+
+    public void syncVideo(YoutubeChannelResDTO.Item item, String accessToken, Channel channel) {
+        String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+		ChannelServiceImpl.YoutubeChannelVideoData data = fetchYoutubeVideoData(item, accessToken, playlistId);
+        //유튜브 비디오 데이터(data.details)의 각 요소의 category id 의 count를 세서 가장 높은 카테고리 추출
+		String topCategoryId = getTopCategoryId(data);
+
+        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
+        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
+
+        channel.updateChannelStats(totalLike, totalComment, topCategoryId);
+
+        for (int i = 0; i < data.getDetails().size(); i++) {
+            YoutubeVideoBriefDTO brief = data.getBriefs().get(i);
+            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
+            videoService.updateVideo(brief, detail, channel);
+        }
+    }
+
+    private ChannelServiceImpl.YoutubeChannelVideoData fetchYoutubeVideoData(
+            YoutubeChannelResDTO.Item item,
+            String accessToken,
+            String uploadPlaylistId
+    ) {
+        List<YoutubeVideoBriefDTO> videoBriefs = YoutubeUtil.getVideosBriefsByPlayListId(accessToken, uploadPlaylistId);
+        List<YoutubeVideoDetailDTO> videoDetails = YoutubeUtil.getVideoDetailsByIds(
+                accessToken, videoBriefs.stream().map(YoutubeVideoBriefDTO::getVideoId).toList());
+
+        // 비동기 작업을 담을 List 생성
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        // Shorts 판별 후 categoryId 수정
+        for (int i = 0; i < videoDetails.size(); i++) {
+            final int index = i;
+            String videoId = videoBriefs.get(i).getVideoId();
+
+            // 각 비디오 확인 작업을 CompletableFuture로 감싸 비동기 실행
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                if (isYoutubeShorts(videoId)) {
+                    // TODO: 스레드 안정성 확보 필요
+                    videoDetails.get(index).updateCategoryId("42");
+                }
+            });
+            futures.add(future);
+        }
+        // 모든 비동기 작업이 완료될 때까지 대기
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        return new ChannelServiceImpl.YoutubeChannelVideoData(item, videoBriefs, videoDetails);
+    }
+
+    public boolean isYoutubeShorts(String videoId) {
+        String shortsUrl = "https://www.youtube.com/shorts/" + videoId;
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    shortsUrl,
+                    HttpMethod.HEAD,
+                    null,
+                    String.class
+            );
+
+            // 2xx 응답이고 리다이렉트가 없으면 Shorts
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return true;
+            }
+
+            // 3xx 리다이렉트면 Location 확인
+            if (response.getStatusCode().is3xxRedirection()) {
+                String location = response.getHeaders().getFirst("Location");
+                return location == null || !location.contains("/watch?v=");
+            }
+
+            return false; // 4xx, 5xx 에러
+
+        } catch (HttpClientErrorException e) {
+            //만약 404 에러일 경우 shorts 가 아니라고 판단
+            return false;
+        }
+    }
+
+    private String getTopCategoryId(ChannelServiceImpl.YoutubeChannelVideoData data) {
+        return data.getDetails().stream()
+                .collect(Collectors.groupingBy(
+                        YoutubeVideoDetailDTO::getCategoryId,
+                        Collectors.counting()
+                ))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("0");
+    }
+
 
     public static YoutubeChannelResDTO.Item getChannelDetails(String accessToken) {
         // 유튜브 API를 호출하여 채널의 정보를 가져오는 메서드

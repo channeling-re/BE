@@ -80,9 +80,11 @@ public class Channel extends BaseEntity {
         this.target = target;
     }
 
-    public void updateChannelStats(Long totalLikeCount, Long totalCommentCount) {
+    public void updateChannelStats(Long totalLikeCount, Long totalCommentCount, String topCategory) {
+//        this.share=shares; // TODO
         this.likeCount = totalLikeCount;
         this.comment = totalCommentCount;
+        this.channelHashTag = VideoCategory.ofId(topCategory);
         this.channelUpdateAt = LocalDateTime.now();
     }
 
@@ -116,4 +118,5 @@ public class Channel extends BaseEntity {
         this.subscribe = item.getStatistics().getSubscriberCount();
         this.videoCount = item.getStatistics().getVideoCount();
     }
+
 }

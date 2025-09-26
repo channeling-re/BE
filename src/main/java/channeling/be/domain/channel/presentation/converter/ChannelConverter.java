@@ -42,7 +42,7 @@ public class ChannelConverter {
             topCategoryId,
             shares
         );
-        channel.updateChannelStats(stats.likeCount(), stats.commentCount());
+        channel.updateChannelStats(stats.likeCount(), stats.commentCount(), null);
     }
 
     public static Channel toNewChannel(YoutubeChannelResDTO.Item item, Member member,long shares,String topCategoryId) {
