@@ -1,12 +1,11 @@
 package channeling.be.domain.channel.presentation;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.channel.application.ChannelService;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.report.application.ReportService;
 import channeling.be.domain.report.presentation.dto.ReportResDTO;
 import channeling.be.domain.video.application.VideoService;
-import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.presentaion.VideoResDTO;
 import channeling.be.response.exception.handler.ApiResponse;

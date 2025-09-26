@@ -1,6 +1,5 @@
 package channeling.be.domain.video.application;
 
-import channeling.be.domain.channel.application.ChannelService;
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.channel.domain.repository.ChannelRepository;
 import channeling.be.domain.member.domain.Member;
@@ -10,8 +9,8 @@ import channeling.be.domain.video.domain.VideoConverter;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.domain.repository.VideoRepository;
 import channeling.be.domain.video.presentaion.VideoResDTO;
-import channeling.be.global.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
-import channeling.be.global.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.ChannelHandler;
 import channeling.be.response.exception.handler.VideoHandler;

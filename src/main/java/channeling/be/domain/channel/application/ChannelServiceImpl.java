@@ -7,12 +7,11 @@ import channeling.be.domain.channel.presentation.converter.ChannelConverter;
 import channeling.be.domain.channel.presentation.dto.request.ChannelRequestDto;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.video.application.VideoService;
-import channeling.be.domain.video.domain.Video;
-import channeling.be.global.infrastructure.redis.RedisUtil;
-import channeling.be.global.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
-import channeling.be.global.infrastructure.youtube.YoutubeUtil;
-import channeling.be.global.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
-import channeling.be.global.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
+import channeling.be.infrastructure.redis.RedisUtil;
+import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
+import channeling.be.infrastructure.youtube.YoutubeUtil;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.response.exception.handler.ChannelHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,10 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
