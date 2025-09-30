@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      security.protocol: PLAINTEXT # 보안 프로토콜 설정
+    # Producer(메시지 생산자) 설정
+    producer:
+      acks: all # 'all': 리더와 모든 복제본에 메시지가 저장되었는지 확인하여 가장 안전
+      compression-type: gzip # 메시지 압축 방식 설정 (네트워크 비용 절감)
+      properties:
+        retries: 3 # 전송 실패 시 재시도 횟수
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # 메시지 값을 JSON 형태로 직렬화
+    # Consumer(메시지 소비자) 설정
+    consumer:
+      group-id: be-youtube-group
+      auto-offset-reset: earliest # offset 이 없을 때 가장 처음
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer # 메시지 값을 JSON 형태로 직렬화
+      properties:
+        spring.json.trusted.packages: "*"
