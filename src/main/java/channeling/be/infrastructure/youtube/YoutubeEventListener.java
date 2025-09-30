@@ -1,6 +1,7 @@
 package channeling.be.infrastructure.youtube;
 
 import channeling.be.domain.channel.event.ChannelEvent;
+import channeling.be.infrastructure.youtube.application.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,6 @@ public class YoutubeEventListener {
     @Async
     @TransactionalEventListener
     public void handleMemberLoggedInEvent(ChannelEvent event) {
-        youtubeUtil.syncVideo(event.getItem(), event.getAccessToken(), event.getChannel());
+        youtubeUtil.syncVideos(event.getItem(), event.getAccessToken(), event.getChannel());
     }
 }
