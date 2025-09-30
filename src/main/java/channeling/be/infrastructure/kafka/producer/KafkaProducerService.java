@@ -1,6 +1,7 @@
-package channeling.be.infrastructure.kafka;
+package channeling.be.infrastructure.kafka.producer;
 
 import channeling.be.global.config.KafkaConfig;
+import channeling.be.infrastructure.kafka.dto.VideoSyncRequestDto;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 

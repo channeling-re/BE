@@ -39,23 +39,24 @@ public class YoutubeServiceImpl implements YoutubeService {
 
     // 채널과 연관된 비디오들을 동기화하는 메서드
     public void syncVideos(YoutubeChannelResDTO.Item item, String accessToken, Channel channel) {
-        // 비디오 목록 불러오기
-        String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
-        ChannelServiceImpl.YoutubeChannelVideoData data = getVideos(item, accessToken, playlistId);
-
-        // 채널 통계 업데이트
-        String topCategoryId = getTopCategoryId(data); // 유튜브 비디오 중 가장 많은 category
-        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
-        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
-
-        channel.updateChannelStats(totalLike, totalComment, topCategoryId);
-
-        // 비디오 정보 업데이트
-        for (int i = 0; i < data.getDetails().size(); i++) {
-            YoutubeVideoBriefDTO brief = data.getBriefs().get(i);
-            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
-            videoService.updateVideo(brief, detail, channel);
-        }
+        throw new RuntimeException("대드락 테스트 하려고");
+//        // 비디오 목록 불러오기
+//        String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+//        ChannelServiceImpl.YoutubeChannelVideoData data = getVideos(item, accessToken, playlistId);
+//
+//        // 채널 통계 업데이트
+//        String topCategoryId = getTopCategoryId(data); // 유튜브 비디오 중 가장 많은 category
+//        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
+//        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
+//
+//        channel.updateChannelStats(totalLike, totalComment, topCategoryId);
+//
+//        // 비디오 정보 업데이트
+//        for (int i = 0; i < data.getDetails().size(); i++) {
+//            YoutubeVideoBriefDTO brief = data.getBriefs().get(i);
+//            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
+//            videoService.updateVideo(brief, detail, channel);
+//        }
     }
 
 

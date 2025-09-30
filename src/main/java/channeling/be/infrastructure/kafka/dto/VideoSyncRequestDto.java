@@ -1,4 +1,4 @@
-package channeling.be.infrastructure.kafka;
+package channeling.be.infrastructure.kafka.dto;
 
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
