@@ -1,4 +1,4 @@
-package channeling.be.infrastructure.youtube.dto;
+package channeling.be.infrastructure.youtube.presentation;
 
 import lombok.Builder;
 

@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 import channeling.be.domain.channel.domain.Channel;
-import channeling.be.infrastructure.youtube.dto.YoutubeDto;
+import channeling.be.infrastructure.youtube.presentation.YoutubeDto;
 
 public class VideoConverter {
 	public static Video toVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeDto.VideoDetailDTO detailDTO, Channel channel) {

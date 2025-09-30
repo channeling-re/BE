@@ -1,10 +1,8 @@
 package channeling.be.domain.channel.presentation.converter;
 
-import channeling.be.domain.channel.application.model.Stats;
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.member.domain.Member;
-import channeling.be.domain.video.domain.VideoCategory;
-import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
+import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import static channeling.be.domain.channel.presentation.dto.response.ChannelResponseDto.*;

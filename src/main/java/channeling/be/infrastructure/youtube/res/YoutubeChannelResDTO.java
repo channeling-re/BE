@@ -1,4 +1,4 @@
-package channeling.be.infrastructure.youtube.dto.res;
+package channeling.be.infrastructure.youtube.res;
 
 import java.time.LocalDateTime;
 import java.util.List;

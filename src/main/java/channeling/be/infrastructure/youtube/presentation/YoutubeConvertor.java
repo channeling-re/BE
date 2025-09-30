@@ -1,7 +1,6 @@
-package channeling.be.infrastructure.youtube;
+package channeling.be.infrastructure.youtube.presentation;
 
-import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.res.YoutubePlayListResDTO;
+import channeling.be.infrastructure.youtube.res.YoutubePlayListResDTO;
 
 import java.util.List;
 

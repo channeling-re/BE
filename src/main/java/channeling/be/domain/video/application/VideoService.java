@@ -7,7 +7,7 @@ import channeling.be.domain.video.domain.Video;
 import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.presentaion.VideoResDTO;
-import channeling.be.infrastructure.youtube.dto.YoutubeDto;
+import channeling.be.infrastructure.youtube.presentation.YoutubeDto;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;

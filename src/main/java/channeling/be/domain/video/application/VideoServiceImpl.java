@@ -9,7 +9,7 @@ import channeling.be.domain.video.domain.VideoConverter;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.domain.repository.VideoRepository;
 import channeling.be.domain.video.presentaion.VideoResDTO;
-import channeling.be.infrastructure.youtube.dto.YoutubeDto;
+import channeling.be.infrastructure.youtube.presentation.YoutubeDto;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.ChannelHandler;
 import channeling.be.response.exception.handler.VideoHandler;

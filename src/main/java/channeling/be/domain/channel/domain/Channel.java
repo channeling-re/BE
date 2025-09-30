@@ -1,10 +1,9 @@
 package channeling.be.domain.channel.domain;
 
-import channeling.be.domain.channel.application.model.Stats;
 import channeling.be.domain.common.BaseEntity;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.video.domain.VideoCategory;
-import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
+import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -2,8 +2,8 @@ package channeling.be.infrastructure.youtube.application;
 
 import channeling.be.domain.channel.application.ChannelServiceImpl;
 import channeling.be.domain.channel.domain.Channel;
-import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
+import channeling.be.infrastructure.youtube.presentation.YoutubeDto;
+import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 
 import java.util.List;
 
