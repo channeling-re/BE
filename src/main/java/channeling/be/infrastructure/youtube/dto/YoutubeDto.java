@@ -1,17 +1,32 @@
 package channeling.be.infrastructure.youtube.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 
 public class YoutubeDto {
-    @Getter
     @Builder
-    @AllArgsConstructor
     public record VideoBriefDTO(
         String videoId,
         String thumbnailUrl,
         String title,
         String publishedAt
     ) {}
+
+    @Builder
+    public record VideoDetailDTO(
+        String description,
+        String categoryId,
+        Long viewCount,
+        Long likeCount,
+        Long commentCount
+    ) {
+        public VideoDetailDTO withCategoryId(String newCategoryId) {
+            return VideoDetailDTO.builder()
+                    .description(description)
+                    .categoryId(newCategoryId)
+                    .viewCount(viewCount)
+                    .likeCount(likeCount)
+                    .commentCount(commentCount)
+                    .build();
+        }
+    }
 }

@@ -5,7 +5,6 @@ import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.video.application.VideoService;
 import channeling.be.infrastructure.youtube.YoutubeConvertor;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoListResDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubePlayListResDTO;
@@ -45,15 +44,15 @@ public class YoutubeServiceImpl implements YoutubeService {
 
         // 채널 통계 업데이트
         String topCategoryId = getTopCategoryId(data); // 유튜브 비디오 중 가장 많은 category
-        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
-        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
+        Long totalLike = data.getDetails().stream().mapToLong(YoutubeDto.VideoDetailDTO::likeCount).sum();
+        Long totalComment = data.getDetails().stream().mapToLong(YoutubeDto.VideoDetailDTO::commentCount).sum();
 
         channel.updateChannelStats(totalLike, totalComment, topCategoryId);
 
         // 비디오 정보 업데이트
         for (int i = 0; i < data.getDetails().size(); i++) {
             YoutubeDto.VideoBriefDTO brief = data.getBriefs().get(i);
-            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
+            YoutubeDto.VideoDetailDTO detail = data.getDetails().get(i);
             videoService.updateVideo(brief, detail, channel);
         }
     }
@@ -102,12 +101,12 @@ public class YoutubeServiceImpl implements YoutubeService {
         List<String> videoIds = videoBriefs.stream()
                 .map(YoutubeDto.VideoBriefDTO::videoId)
                 .toList();
-        List<YoutubeVideoDetailDTO> videoDetails = getYoutubeVideoDetail(accessToken, videoIds);
+        List<YoutubeDto.VideoDetailDTO> videoDetails = getYoutubeVideoDetail(accessToken, videoIds);
 
         // Shorts 여부 확인 및 카테고리 업데이트
         for (int i = 0; i < videoDetails.size(); i++) {
             if (isYoutubeShorts(videoBriefs.get(i).videoId())) {
-                videoDetails.get(i).updateCategoryId("42");
+                videoDetails.set(i, videoDetails.get(i).withCategoryId("42"));
             }
         }
         return new ChannelServiceImpl.YoutubeChannelVideoData(item, videoBriefs, videoDetails);
@@ -163,7 +162,7 @@ public class YoutubeServiceImpl implements YoutubeService {
 
 
     // 유튜브 비디오의 상세 정보를 가져오는 메서드
-    public List<YoutubeVideoDetailDTO> getYoutubeVideoDetail(String accessToken, List<String> videoIds) {
+    public List<YoutubeDto.VideoDetailDTO> getYoutubeVideoDetail(String accessToken, List<String> videoIds) {
         try {
             String ids = String.join(",", videoIds);
 
@@ -188,13 +187,13 @@ public class YoutubeServiceImpl implements YoutubeService {
             }
 
             return youtubeVideoListResDTO.getItems().stream()
-                    .map(item -> new YoutubeVideoDetailDTO(
-                            item.getSnippet().getDescription(),
-                            item.getSnippet().getCategoryId(),
-                            item.getStatistics().getViewCount(),
-                            item.getStatistics().getLikeCount(),
-                            item.getStatistics().getCommentCount()
-                    ))
+                    .map(item -> YoutubeDto.VideoDetailDTO.builder()
+                            .description(item.getSnippet().getDescription())
+                            .categoryId(item.getSnippet().getCategoryId())
+                            .viewCount(item.getStatistics().getViewCount())
+                            .likeCount(item.getStatistics().getLikeCount())
+                            .commentCount(item.getStatistics().getCommentCount())
+                            .build())
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
@@ -235,7 +234,7 @@ public class YoutubeServiceImpl implements YoutubeService {
     private String getTopCategoryId(ChannelServiceImpl.YoutubeChannelVideoData data) {
         return data.getDetails().stream()
                 .collect(Collectors.groupingBy(
-                        YoutubeVideoDetailDTO::getCategoryId,
+                        YoutubeDto.VideoDetailDTO::categoryId,
                         Collectors.counting()
                 ))
                 .entrySet()

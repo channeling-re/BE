@@ -8,7 +8,6 @@ import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.presentaion.VideoResDTO;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
@@ -49,7 +48,7 @@ public interface VideoService {
 		int size
 	);
 
-	Video updateVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeVideoDetailDTO detailDTO, Channel channel);
+	Video updateVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeDto.VideoDetailDTO detailDTO, Channel channel);
 
 	/**
 	 * (홈화면) 내 채널의 추천 비디오 목록을 조회합니다.

@@ -5,37 +5,36 @@ import java.time.format.DateTimeFormatter;
 
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 
 public class VideoConverter {
-	public static Video toVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeVideoDetailDTO detailDTO, Channel channel) {
+	public static Video toVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeDto.VideoDetailDTO detailDTO, Channel channel) {
 		return Video.builder()
 			.channel(channel)
 			.youtubeVideoId(briefDTO.videoId())
-			.view(detailDTO.getViewCount())
-			.likeCount(detailDTO.getLikeCount())
-			.commentCount(detailDTO.getCommentCount())
+			.view(detailDTO.viewCount())
+			.likeCount(detailDTO.likeCount())
+			.commentCount(detailDTO.commentCount())
 			.thumbnail(briefDTO.thumbnailUrl())
 			.title(briefDTO.title())
-			.description(detailDTO.getDescription())
+			.description(detailDTO.description())
 			.link("https://www.youtube.com/watch?v="+briefDTO.videoId())
 			.uploadDate(OffsetDateTime.parse(briefDTO.publishedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME
 			).toLocalDateTime())
-			.videoCategory(VideoCategory.ofId(detailDTO.getCategoryId()))
+			.videoCategory(VideoCategory.ofId(detailDTO.categoryId()))
 			.build();
 	}
-	public static void toVideo(Video video, YoutubeDto.VideoBriefDTO briefDTO, YoutubeVideoDetailDTO detailDTO) {
+	public static void toVideo(Video video, YoutubeDto.VideoBriefDTO briefDTO, YoutubeDto.VideoDetailDTO detailDTO) {
 		video.setLink("https://www.youtube.com/watch?v=" + briefDTO.videoId());
 		video.setThumbnail(briefDTO.thumbnailUrl());
 		video.setTitle(briefDTO.title());
 		video.setUploadDate(OffsetDateTime.parse(briefDTO.publishedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 			.toLocalDateTime());
-		video.setDescription(detailDTO.getDescription());
-		video.setView(detailDTO.getViewCount());
-		video.setLikeCount(detailDTO.getLikeCount());
-		video.setCommentCount(detailDTO.getCommentCount());
+		video.setDescription(detailDTO.description());
+		video.setView(detailDTO.viewCount());
+		video.setLikeCount(detailDTO.likeCount());
+		video.setCommentCount(detailDTO.commentCount());
 		video.setVideoCategory(
-				VideoCategory.ofId(detailDTO.getCategoryId())
+				VideoCategory.ofId(detailDTO.categoryId())
 		);
 	}
 }

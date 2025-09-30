@@ -10,7 +10,6 @@ import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.domain.repository.VideoRepository;
 import channeling.be.domain.video.presentaion.VideoResDTO;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.ChannelHandler;
 import channeling.be.response.exception.handler.VideoHandler;
@@ -66,7 +65,7 @@ public class VideoServiceImpl implements VideoService {
 
 	@Transactional
 	@Override
-	public Video updateVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeVideoDetailDTO detailDTO, Channel channel) {
+	public Video updateVideo(YoutubeDto.VideoBriefDTO briefDTO, YoutubeDto.VideoDetailDTO detailDTO, Channel channel) {
 		Optional<Video> existing = videoRepository.findByYoutubeVideoId(briefDTO.videoId());
 
 		if (existing.isPresent()) {

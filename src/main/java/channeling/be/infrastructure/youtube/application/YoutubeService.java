@@ -3,7 +3,6 @@ package channeling.be.infrastructure.youtube.application;
 import channeling.be.domain.channel.application.ChannelServiceImpl;
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public interface YoutubeService {
      */
     ChannelServiceImpl.YoutubeChannelVideoData getVideos(YoutubeChannelResDTO.Item item, String accessToken, String uploadPlaylistId);
     List<YoutubeDto.VideoBriefDTO> getYoutubePlayLists(String accessToken, String playlistId);
-    List<YoutubeVideoDetailDTO> getYoutubeVideoDetail(String accessToken, List<String> videoIds);
+    List<YoutubeDto.VideoDetailDTO> getYoutubeVideoDetail(String accessToken, List<String> videoIds);
 
     /*
      * 유튜브 쇼츠 여부를 판단합니다.

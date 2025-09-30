@@ -10,7 +10,6 @@ import channeling.be.infrastructure.kafka.dto.KafkaVideoSyncDto;
 import channeling.be.infrastructure.redis.RedisUtil;
 import channeling.be.infrastructure.youtube.application.YoutubeService;
 import channeling.be.infrastructure.youtube.dto.YoutubeDto;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 import channeling.be.response.exception.handler.ChannelHandler;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,7 @@ public class ChannelServiceImpl implements ChannelService {
 	public static class YoutubeChannelVideoData {
 		YoutubeChannelResDTO.Item item;
 		List<YoutubeDto.VideoBriefDTO> briefs;
-		List<YoutubeVideoDetailDTO> details;
+		List<YoutubeDto.VideoDetailDTO> details;
 	}
 
 
