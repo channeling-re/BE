@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class YoutubeUtil implements YoutubeService {
+public class YoutubeServiceImpl implements YoutubeService {
 
     private final RestTemplate restTemplate;
     private final VideoService videoService;

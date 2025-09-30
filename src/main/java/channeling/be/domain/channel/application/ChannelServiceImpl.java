@@ -7,7 +7,7 @@ import channeling.be.domain.channel.presentation.converter.ChannelConverter;
 import channeling.be.domain.channel.presentation.dto.request.ChannelRequestDto;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.infrastructure.redis.RedisUtil;
-import channeling.be.infrastructure.youtube.application.YoutubeUtil;
+import channeling.be.infrastructure.youtube.application.YoutubeService;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
@@ -31,7 +31,7 @@ import static channeling.be.response.code.status.ErrorStatus._CHANNEL_NOT_MEMBER
 @Service
 public class ChannelServiceImpl implements ChannelService {
 	private final ChannelRepository channelRepository;
-	private final YoutubeUtil youtubeUtil;
+	private final YoutubeService youtubeService;
 	private final RedisUtil redisUtil;
 
 	private final ApplicationEventPublisher eventPublisher;
@@ -101,7 +101,7 @@ public class ChannelServiceImpl implements ChannelService {
 		String googleAccessToken = redisUtil.getGoogleAccessToken(member.getId());
 
 		// 유튜브 채널 정보 가져오기
-		YoutubeChannelResDTO.Item item = youtubeUtil.syncChannel(googleAccessToken);
+		YoutubeChannelResDTO.Item item = youtubeService.syncChannel(googleAccessToken);
 
 		// 채널 없으면 생성, 있으면 업데이트
 		Channel channel = channelRepository.findByMember(member)
