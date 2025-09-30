@@ -26,47 +26,7 @@ public class ChannelConverter {
                 .build();
     }
 
-    public static void updateChannel(Channel channel, YoutubeChannelResDTO.Item item,String topCategoryId ,Stats stats,long shares) {
-        channel.updateChannelInfo(
-            item.getSnippet().getTitle(),
-            item.getId(),
-            item.getContentDetails().getRelatedPlaylists().getUploads(),
-            item.getSnippet().getThumbnails().getDefaultThumbnail().getUrl(),
-            "https://www.youtube.com/channel/" + item.getId(),
-            item.getSnippet().getPublishedAt(),
-            item.getStatistics().getViewCount(),
-            item.getStatistics().getSubscriberCount(),
-            item.getStatistics().getVideoCount(),
-            stats.likeCount(),
-            stats.commentCount(),
-            topCategoryId,
-            shares
-        );
-        channel.updateChannelStats(stats.likeCount(), stats.commentCount(), null);
-    }
-
-    public static Channel toNewChannel(YoutubeChannelResDTO.Item item, Member member,long shares,String topCategoryId) {
-        return Channel.builder()
-            .name(item.getSnippet().getTitle())
-            .youtubeChannelId(item.getId())
-            .youtubePlaylistId(item.getContentDetails().getRelatedPlaylists().getUploads())
-            .image(item.getSnippet().getThumbnails().getDefaultThumbnail().getUrl())
-            .link("https://www.youtube.com/channel/" + item.getId())
-            .joinDate(item.getSnippet().getPublishedAt())
-            .view(item.getStatistics().getViewCount())
-            .subscribe(item.getStatistics().getSubscriberCount())
-            .videoCount(item.getStatistics().getVideoCount())
-            .member(member)
-            .target("default")
-            .likeCount(0L)
-            .channelHashTag(VideoCategory.ofId(topCategoryId))
-            .channelUpdateAt(LocalDateTime.now())
-            .concept("default")
-            .comment(0L)
-            .share(shares)
-            .build();
-    }
-
+    // Member 가입시 채널 생성용 (기본값 null)
     public static Channel toNewChannel(YoutubeChannelResDTO.Item item, Member member) {
         return Channel.builder()
                 .name(item.getSnippet().getTitle())

@@ -80,30 +80,13 @@ public class Channel extends BaseEntity {
         this.target = target;
     }
 
+    // 비디오, 통계관련 컬럼 업데이트
     public void updateChannelStats(Long totalLikeCount, Long totalCommentCount, String topCategory) {
-//        this.share=shares; // TODO
+        // this.share=shares; // TODO : 추후 공유수 반영
         this.likeCount = totalLikeCount;
         this.comment = totalCommentCount;
         this.channelHashTag = VideoCategory.ofId(topCategory);
         this.channelUpdateAt = LocalDateTime.now();
-    }
-
-    public void updateChannelInfo(String title, String channelId, String uploadPlaylistId, String profileImageUrl, String channelUrl, LocalDateTime publishedAt, Long viewCount, Long subscriberCount, Long videoCount,
-        long likeCount, long commentCount,String topCategoryId,long shares) {
-        this.name = title;
-        this.youtubeChannelId = channelId;
-        this.youtubePlaylistId = uploadPlaylistId;
-        this.image = profileImageUrl;
-        this.link = channelUrl;
-        this.joinDate = publishedAt;
-        this.view = viewCount;
-        this.subscribe = subscriberCount;
-        this.videoCount = videoCount;
-        this.likeCount = likeCount;
-        this.comment = commentCount;
-        this.channelUpdateAt = LocalDateTime.now();
-        this.channelHashTag = VideoCategory.ofId(topCategoryId);
-        this.share=shares;
     }
 
     // 유튜브 채널 정보 업데이트
