@@ -2,10 +2,11 @@ package channeling.be.domain.channel.application;
 
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.channel.domain.repository.ChannelRepository;
-import channeling.be.domain.channel.event.ChannelEvent;
 import channeling.be.domain.channel.presentation.converter.ChannelConverter;
 import channeling.be.domain.channel.presentation.dto.request.ChannelRequestDto;
 import channeling.be.domain.member.domain.Member;
+import channeling.be.infrastructure.kafka.KafkaProducerService;
+import channeling.be.infrastructure.kafka.VideoSyncRequestDto;
 import channeling.be.infrastructure.redis.RedisUtil;
 import channeling.be.infrastructure.youtube.application.YoutubeService;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
@@ -16,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,8 @@ public class ChannelServiceImpl implements ChannelService {
 	private final YoutubeService youtubeService;
 	private final RedisUtil redisUtil;
 
-	private final ApplicationEventPublisher eventPublisher;
+	private final KafkaProducerService kafkaProducerService;
+
 
 	@AllArgsConstructor
 	@Getter
@@ -111,8 +112,8 @@ public class ChannelServiceImpl implements ChannelService {
 				})
 				.orElseGet(() -> channelRepository.save(ChannelConverter.toNewChannel(item, member)));
 
-		// 채널 생성/업데이트 이벤트 발행
-		eventPublisher.publishEvent(new ChannelEvent(item, googleAccessToken, channel));
+		// 채널 생성/업데이트 메시지 발행
+		kafkaProducerService.sendVideoSyncRequest(new VideoSyncRequestDto(item, googleAccessToken, channel));
 
 		return channel;
 	}
