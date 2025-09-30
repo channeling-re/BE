@@ -2,7 +2,7 @@ package channeling.be.infrastructure.youtube.application;
 
 import channeling.be.domain.channel.application.ChannelServiceImpl;
 import channeling.be.domain.channel.domain.Channel;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.YoutubeDto;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 
@@ -28,7 +28,7 @@ public interface YoutubeService {
      * 2. getYoutubeVideoDetail() : 동영상 ID 목록으로 동영상의 상세 정보를 가져옵니다.
      */
     ChannelServiceImpl.YoutubeChannelVideoData getVideos(YoutubeChannelResDTO.Item item, String accessToken, String uploadPlaylistId);
-    List<YoutubeVideoBriefDTO> getYoutubePlayLists(String accessToken, String playlistId);
+    List<YoutubeDto.VideoBriefDTO> getYoutubePlayLists(String accessToken, String playlistId);
     List<YoutubeVideoDetailDTO> getYoutubeVideoDetail(String accessToken, List<String> videoIds);
 
     /*

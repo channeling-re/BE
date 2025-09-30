@@ -1,6 +1,6 @@
 package channeling.be.global.config;
 
-import channeling.be.infrastructure.kafka.dto.VideoSyncRequestDto;
+import channeling.be.infrastructure.kafka.dto.KafkaVideoSyncDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class KafkaConfig {
     /**
      * Dead Letter Topic으로 메시지를 보낼 때 사용할 KafkaTemplate
      */
-    private final KafkaTemplate<String, VideoSyncRequestDto> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaVideoSyncDto> kafkaTemplate;
 
     /**
      * 재시도 및 DLT 처리
@@ -45,11 +45,11 @@ public class KafkaConfig {
      * 위에서 만든 Error Handler를 Kafka Listener에 적용하기 위한 Container Factory 설정
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, VideoSyncRequestDto> kafkaListenerContainerFactory(
-            ConsumerFactory<String, VideoSyncRequestDto> consumerFactory,
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaVideoSyncDto> kafkaListenerContainerFactory(
+            ConsumerFactory<String, KafkaVideoSyncDto> consumerFactory,
             DefaultErrorHandler errorHandler) {
 
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, VideoSyncRequestDto>();
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, KafkaVideoSyncDto>();
         factory.setConsumerFactory(consumerFactory);
         factory.setCommonErrorHandler(errorHandler);
         return factory;

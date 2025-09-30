@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoSyncRequestDto {
+public class KafkaVideoSyncDto {
     private YoutubeChannelResDTO.Item item;
     private String accessToken;
     private Channel channel;

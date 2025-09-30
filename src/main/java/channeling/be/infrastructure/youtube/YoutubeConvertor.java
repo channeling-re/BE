@@ -1,21 +1,21 @@
 package channeling.be.infrastructure.youtube;
 
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.YoutubeDto;
 import channeling.be.infrastructure.youtube.dto.res.YoutubePlayListResDTO;
 
 import java.util.List;
 
 public class YoutubeConvertor {
 
-    public static List<YoutubeVideoBriefDTO> toBrief(YoutubePlayListResDTO response) {
+    public static List<YoutubeDto.VideoBriefDTO> toBrief(YoutubePlayListResDTO response) {
         return response.getItems().stream()
                 .filter(item -> getThumbnailUrl(item.getSnippet().getThumbnails()) != null)
-                .map(item -> new YoutubeVideoBriefDTO(
-                        item.getSnippet().getResourceId().getVideoId(),
-                        getThumbnailUrl(item.getSnippet().getThumbnails()),
-                        item.getSnippet().getTitle(),
-                        item.getSnippet().getPublishedAt()
-                ))
+                .map(item -> YoutubeDto.VideoBriefDTO.builder()
+                        .videoId(item.getSnippet().getResourceId().getVideoId())
+                        .thumbnailUrl(getThumbnailUrl(item.getSnippet().getThumbnails()))
+                        .title(item.getSnippet().getTitle())
+                        .publishedAt(item.getSnippet().getPublishedAt())
+                        .build())
                 .toList();
     }
 

@@ -6,10 +6,10 @@ import channeling.be.domain.channel.presentation.converter.ChannelConverter;
 import channeling.be.domain.channel.presentation.dto.request.ChannelRequestDto;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.infrastructure.kafka.producer.KafkaProducerService;
-import channeling.be.infrastructure.kafka.dto.VideoSyncRequestDto;
+import channeling.be.infrastructure.kafka.dto.KafkaVideoSyncDto;
 import channeling.be.infrastructure.redis.RedisUtil;
 import channeling.be.infrastructure.youtube.application.YoutubeService;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.YoutubeDto;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
 import channeling.be.response.exception.handler.ChannelHandler;
@@ -41,7 +41,7 @@ public class ChannelServiceImpl implements ChannelService {
 	@Getter
 	public static class YoutubeChannelVideoData {
 		YoutubeChannelResDTO.Item item;
-		List<YoutubeVideoBriefDTO> briefs;
+		List<YoutubeDto.VideoBriefDTO> briefs;
 		List<YoutubeVideoDetailDTO> details;
 	}
 
@@ -113,7 +113,7 @@ public class ChannelServiceImpl implements ChannelService {
 				.orElseGet(() -> channelRepository.save(ChannelConverter.toNewChannel(item, member)));
 
 		// 채널 생성/업데이트 메시지 발행
-		kafkaProducerService.sendVideoSyncRequest(new VideoSyncRequestDto(item, googleAccessToken, channel));
+		kafkaProducerService.sendVideoSyncRequest(new KafkaVideoSyncDto(item, googleAccessToken, channel));
 
 		return channel;
 	}

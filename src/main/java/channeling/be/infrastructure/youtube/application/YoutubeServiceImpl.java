@@ -4,7 +4,7 @@ import channeling.be.domain.channel.application.ChannelServiceImpl;
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.video.application.VideoService;
 import channeling.be.infrastructure.youtube.YoutubeConvertor;
-import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoBriefDTO;
+import channeling.be.infrastructure.youtube.dto.YoutubeDto;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoDetailDTO;
 import channeling.be.infrastructure.youtube.dto.model.YoutubeVideoListResDTO;
 import channeling.be.infrastructure.youtube.dto.res.YoutubeChannelResDTO;
@@ -39,24 +39,23 @@ public class YoutubeServiceImpl implements YoutubeService {
 
     // 채널과 연관된 비디오들을 동기화하는 메서드
     public void syncVideos(YoutubeChannelResDTO.Item item, String accessToken, Channel channel) {
-        throw new RuntimeException("대드락 테스트 하려고");
-//        // 비디오 목록 불러오기
-//        String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
-//        ChannelServiceImpl.YoutubeChannelVideoData data = getVideos(item, accessToken, playlistId);
-//
-//        // 채널 통계 업데이트
-//        String topCategoryId = getTopCategoryId(data); // 유튜브 비디오 중 가장 많은 category
-//        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
-//        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
-//
-//        channel.updateChannelStats(totalLike, totalComment, topCategoryId);
-//
-//        // 비디오 정보 업데이트
-//        for (int i = 0; i < data.getDetails().size(); i++) {
-//            YoutubeVideoBriefDTO brief = data.getBriefs().get(i);
-//            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
-//            videoService.updateVideo(brief, detail, channel);
-//        }
+        // 비디오 목록 불러오기
+        String playlistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+        ChannelServiceImpl.YoutubeChannelVideoData data = getVideos(item, accessToken, playlistId);
+
+        // 채널 통계 업데이트
+        String topCategoryId = getTopCategoryId(data); // 유튜브 비디오 중 가장 많은 category
+        Long totalLike = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getLikeCount).sum();
+        Long totalComment = data.getDetails().stream().mapToLong(YoutubeVideoDetailDTO::getCommentCount).sum();
+
+        channel.updateChannelStats(totalLike, totalComment, topCategoryId);
+
+        // 비디오 정보 업데이트
+        for (int i = 0; i < data.getDetails().size(); i++) {
+            YoutubeDto.VideoBriefDTO brief = data.getBriefs().get(i);
+            YoutubeVideoDetailDTO detail = data.getDetails().get(i);
+            videoService.updateVideo(brief, detail, channel);
+        }
     }
 
 
@@ -99,15 +98,15 @@ public class YoutubeServiceImpl implements YoutubeService {
             String uploadPlaylistId
     ) {
         // yotube 비디오 요약 정보 및 상세 정보 불러오기
-        List<YoutubeVideoBriefDTO> videoBriefs = getYoutubePlayLists(accessToken, uploadPlaylistId);
+        List<YoutubeDto.VideoBriefDTO> videoBriefs = getYoutubePlayLists(accessToken, uploadPlaylistId);
         List<String> videoIds = videoBriefs.stream()
-                .map(YoutubeVideoBriefDTO::getVideoId)
+                .map(YoutubeDto.VideoBriefDTO::videoId)
                 .toList();
         List<YoutubeVideoDetailDTO> videoDetails = getYoutubeVideoDetail(accessToken, videoIds);
 
         // Shorts 여부 확인 및 카테고리 업데이트
         for (int i = 0; i < videoDetails.size(); i++) {
-            if (isYoutubeShorts(videoBriefs.get(i).getVideoId())) {
+            if (isYoutubeShorts(videoBriefs.get(i).videoId())) {
                 videoDetails.get(i).updateCategoryId("42");
             }
         }
@@ -116,8 +115,8 @@ public class YoutubeServiceImpl implements YoutubeService {
 
 
     // 유튜브 API를 호출하여 플레이리스트의 비디오 정보를 가져오는 메서드
-    public List<YoutubeVideoBriefDTO> getYoutubePlayLists(String accessToken, String playlistId) {
-        List<YoutubeVideoBriefDTO> videoList = new ArrayList<>();
+    public List<YoutubeDto.VideoBriefDTO> getYoutubePlayLists(String accessToken, String playlistId) {
+        List<YoutubeDto.VideoBriefDTO> videoList = new ArrayList<>();
         String pageToken = null;
 
         do {

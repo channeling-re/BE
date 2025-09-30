@@ -1,7 +1,7 @@
 package channeling.be.infrastructure.kafka.consumer;
 
 import channeling.be.global.config.KafkaConfig;
-import channeling.be.infrastructure.kafka.dto.VideoSyncRequestDto;
+import channeling.be.infrastructure.kafka.dto.KafkaVideoSyncDto;
 import channeling.be.infrastructure.youtube.application.YoutubeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = KafkaConfig.VIDEO_SYNC_TOPIC, groupId = "be-youtube-group",
             containerFactory = "kafkaListenerContainerFactory")
-    public void consumeVideoSyncRequest(VideoSyncRequestDto requestDto) {
+    public void consumeVideoSyncRequest(KafkaVideoSyncDto requestDto) {
         log.info("Kafka 토픽에서 채널 ID '{}'의 비디오 동기화 요청을 수신했습니다.", requestDto.getChannel().getId());
         try {
             youtubeService.syncVideos(requestDto.getItem(), requestDto.getAccessToken(), requestDto.getChannel());
