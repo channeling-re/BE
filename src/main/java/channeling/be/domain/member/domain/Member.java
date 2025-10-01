@@ -19,10 +19,10 @@ public class Member extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String nickname; // 닉네임
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String googleEmail; // 구글 이메일
 
-    @Column(length = 100)
+    @Column(length = 255)
     private String profileImage; // 프로필 이미지
 
     @Column(length = 100)
