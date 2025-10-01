@@ -1,8 +1,12 @@
 package channeling.be.global.infrastructure.jwt;
 
+import channeling.be.domain.auth.application.GoogleOAuthService;
 import channeling.be.domain.member.domain.Member;
+import channeling.be.domain.member.domain.repository.MemberRepository;
 import channeling.be.global.infrastructure.redis.RedisUtil;
+import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.JwtHandler;
+import channeling.be.response.exception.handler.MemberHandler;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -29,6 +33,8 @@ import java.util.Optional;
 public class JwtUtilImpl implements JwtUtil {
 
     private final RedisUtil redisUtil;
+    private final MemberRepository memberRepository;
+    private final GoogleOAuthService googleOAuthService;
 
     /** JWT 서명에 사용할 비밀키 */
     @Value("${jwt.secret}")
@@ -37,6 +43,11 @@ public class JwtUtilImpl implements JwtUtil {
     /** 액세스 토큰 만료 시간 */
     @Value("${jwt.access.expiration}")
     private Long accessExpiration;
+
+
+    /** 리프레시 토큰 만료 시간 */
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshExpiration;
 
     /** HTTP 요청/응답 헤더에 사용할 액세스 토큰 키 이름 */
     @Value("${jwt.access.header}")
@@ -47,6 +58,10 @@ public class JwtUtilImpl implements JwtUtil {
 
     /** JWT subject 값 - 액세스 토큰 구분용 */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+
+    /** JWT subject 값 - 리프레시 토큰 구분용 */
+    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+
     /** JWT 클레임 키 - 구글 아이디 */
     private static final String GOOGLE_CLAIM = "googleId";
 
@@ -66,6 +81,35 @@ public class JwtUtilImpl implements JwtUtil {
                 .sign(Algorithm.HMAC512(secret));
     }
 
+    @Override
+    public String createRefreshToken(Member member) {
+        return JWT.create()
+                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshExpiration * 1000))
+                .withClaim(USERID_CLAIM, member.getId())
+                .sign(Algorithm.HMAC512(secret));
+    }
+
+    @Override
+    public String reissueAccessToken(String refreshToken) {
+        //리프레시 토큰 검증
+        isTokenValid(refreshToken);
+        // 블렉리스트 검증
+        isTokenInBlackList(refreshToken);
+        // 토큰에서 멤버 정보 추출
+        Long memberId = extractMemberId(refreshToken).get();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberHandler(ErrorStatus._MEMBER_NOT_FOUND));
+        // redis에 저장되어 있는 구글 리프레시 조회
+        String googleRefreshToken = redisUtil.getGoogleRefreshToken(memberId);
+        // 구글 리프레시로 구글 엑세스 재발급
+        String googleAccessToken = googleOAuthService.refreshAccessToken(googleRefreshToken);
+        // 재발급 받은거 다시 저장
+        redisUtil.saveGoogleAccessToken(memberId, googleAccessToken);
+        // 새로운 엑세스 토큰 재발급
+        return createAccessToken(member);
+
+    }
+
 
     @Override
     public Optional<String> extractAccessToken(HttpServletRequest request) {
@@ -81,12 +125,25 @@ public class JwtUtilImpl implements JwtUtil {
     @Override
     public Optional<String> extractGoogleId(String accessToken) {
         try {
-
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret))
                     .build()
                     .verify(accessToken)
                     .getClaim(GOOGLE_CLAIM)
                     .asString());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Long> extractMemberId(String token) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret))
+                    .build()
+                    .verify(token)
+                    .getClaim(USERID_CLAIM)
+                    .asLong());
         } catch (Exception e) {
             log.error(e.getMessage());
             return Optional.empty();

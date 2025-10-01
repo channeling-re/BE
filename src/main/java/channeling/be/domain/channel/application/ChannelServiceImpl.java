@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 @Service
@@ -48,6 +49,18 @@ public class ChannelServiceImpl implements ChannelService {
 	private final VideoService videoService;
 	private final RedisUtil redisUtil;
 	private final RestTemplate restTemplate;
+
+	public ChannelServiceImpl(
+			ChannelRepository channelRepository,
+			VideoService videoService,
+			RedisUtil redisUtil,
+			@Qualifier("restTemplate") RestTemplate restTemplate
+	) {
+		this.channelRepository = channelRepository;
+		this.videoService = videoService;
+		this.redisUtil = redisUtil;
+		this.restTemplate = restTemplate;
+	}
 
 	@AllArgsConstructor
 	@Getter

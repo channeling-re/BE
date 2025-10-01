@@ -53,6 +53,18 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .getAccessToken()
                 .getTokenValue();
 
+
+        String googleRefreshToken = authorizedClientService
+                .loadAuthorizedClient(
+                        oauthToken.getAuthorizedClientRegistrationId(), // "google"
+                        oauthToken.getName())                           // 현재 사용자 식별자
+                .getRefreshToken()
+                .getTokenValue();
+        System.out.println("Refresh Token: " + googleRefreshToken);
+
+
+
+
         log.info("컨텍스트에서 구글 엑세스 토큰 추출 = {}", googleAccessToken);
         /* -------------------------------------------------
          * OAuth2User 꺼내기
@@ -70,16 +82,26 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
          * 5. 유튜브에서 비디오 정보 조회
          * ------------------------------------------------- */
 
-        LoginResult result = memberOauth2UserService.executeGoogleLogin(attrs, googleAccessToken);
+        // soft 여부 확인 추가..?
+        LoginResult result = memberOauth2UserService.executeGoogleLogin(attrs, googleAccessToken, googleRefreshToken); //
 
+
+
+        /*
+        서버 자체 토큰 발급
+         */
         String accessToken = jwtUtil.createAccessToken(result.member());
+        String refreshToken = jwtUtil.createRefreshToken(result.member());
 
+         log.info("Access Token: {}", accessToken);
+         log.info("Refresh Token: {}", refreshToken);
         // 프론트 응답 생성
         String targetUrl = UriComponentsBuilder.fromUriString(frontUrl + "/auth/callback") // TODO
                 .queryParam("token", accessToken)
+                .queryParam("refresh", refreshToken)
                 .queryParam("message", "Success")
                 .queryParam("channelId", result.channel().getId())
-                .queryParam("isNew", result.isNew())
+                .queryParam("isNew", result.isNew()) // innter 30, new
                 .build()
                 .toUriString();
 

@@ -49,7 +49,7 @@ public class MemberOauth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     @Transactional
-    public LoginResult executeGoogleLogin(Map<String, Object> attrs, String googleAccessToken) {
+    public LoginResult executeGoogleLogin(Map<String, Object> attrs, String googleAccessToken, String googleRefreshToken) {
         MemberResult memberResult = memberService.findOrCreateMember(
             attrs.get("sub").toString(),
             attrs.get("email").toString(),
@@ -59,6 +59,7 @@ public class MemberOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
         Member member = memberResult.member;
         redisUtil.saveGoogleAccessToken(member.getId(), googleAccessToken);
+        redisUtil.saveGoogleRefreshAccessToken(member.getId(), googleRefreshToken);
 
         Channel channel = channelService.updateOrCreateChannelByMember(member);
 
