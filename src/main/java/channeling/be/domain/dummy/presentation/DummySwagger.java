@@ -1,13 +1,10 @@
 package channeling.be.domain.dummy.presentation;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import channeling.be.domain.auth.annotation.LoginMember;
 import channeling.be.domain.comment.domain.CommentType;
-import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.report.presentation.ReportResDto;
 import channeling.be.response.exception.handler.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

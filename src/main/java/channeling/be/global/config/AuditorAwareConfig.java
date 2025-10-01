@@ -1,6 +1,6 @@
 package channeling.be.global.config;
 
-import channeling.be.domain.auth.domain.CustomUserDetails;
+import channeling.be.global.auth.domain.CustomUserDetails;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

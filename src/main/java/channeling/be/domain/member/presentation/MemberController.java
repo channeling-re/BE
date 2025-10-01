@@ -1,6 +1,6 @@
 package channeling.be.domain.member.presentation;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.member.domain.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

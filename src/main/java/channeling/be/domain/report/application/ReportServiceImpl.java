@@ -19,7 +19,7 @@ import channeling.be.domain.video.domain.Video;
 import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.domain.video.domain.VideoType;
 import channeling.be.domain.video.domain.repository.VideoRepository;
-import channeling.be.global.infrastructure.redis.RedisUtil;
+import channeling.be.infrastructure.redis.RedisUtil;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.ChannelHandler;
 import channeling.be.response.exception.handler.ReportHandler;

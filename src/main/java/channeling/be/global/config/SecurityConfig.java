@@ -1,14 +1,13 @@
 package channeling.be.global.config;
 
-import channeling.be.domain.auth.application.CustomUserDetailsService;
-import channeling.be.domain.auth.application.MemberOauth2UserService;
-import channeling.be.domain.auth.filter.AuthenticationEntryPointImpl;
-import channeling.be.domain.auth.filter.JwtAuthenticationProcessingFilter;
-import channeling.be.global.infrastructure.jwt.JwtUtil;
+import channeling.be.global.auth.application.CustomUserDetailsService;
+import channeling.be.global.auth.application.MemberOauth2UserService;
+import channeling.be.global.auth.filter.AuthenticationEntryPointImpl;
+import channeling.be.global.auth.filter.JwtAuthenticationProcessingFilter;
+import channeling.be.infrastructure.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
