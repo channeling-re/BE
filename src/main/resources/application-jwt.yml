@@ -3,6 +3,9 @@ jwt:
   access:
     expiration: 3600      # 초 단위, 60min
     header: Authorization
+  refresh:
+    expiration: 600000      # 초 단위, 약 일주일
+    header: Authorization
 
   refresh:
     expiration: 600000      # 초 단위, 약 일주일

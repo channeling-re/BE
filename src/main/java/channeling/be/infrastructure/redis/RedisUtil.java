@@ -23,9 +23,16 @@ public class RedisUtil {
     @Value("${jwt.google.access.expiration}")
     private Long googleAccessExpiration;
 
+    /** 서버 리프레시 토큰 만료 시간 */
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshTokenExpiration;
+
     /** redis에 저장하는 구글 리프레시의 지속 시간 **/
     @Value("${jwt.google.refresh.expiration}")
     private Long googleRefreshExpiration;
+
+    public static String BLACKLIST_TOKEN_PREFIX = "BL_";
+
 
     /** Redis에 저장할 구글 액세스 토큰 키 접두사 */
     private final static String GOOGLE_ACCESS_TOKEN_PREFIX = "GOOGLE_AT_";
@@ -124,5 +131,19 @@ public class RedisUtil {
         String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
         // TTL (Time To Live)을 초 단위로 가져옴
         return stringRedisTemplate.getExpire(key, TimeUnit.SECONDS);
+    }
+
+    /**
+     *  입력받은 토큰을 블랙리스트에 넣습니다.
+     * @param token 블래리스트에 넣을 토큰 값
+     * @return 생성된 블랙리스트 토큰 문자열
+     */
+    public void addRefreshTokenToBlackList(String token) {
+        String key = BLACKLIST_TOKEN_PREFIX + token;
+        stringRedisTemplate.opsForValue().set(
+                key,
+                String.valueOf(1),
+                Duration.ofSeconds(refreshTokenExpiration)
+        );
     }
 }

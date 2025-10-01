@@ -17,11 +17,11 @@ public class AuditorAwareConfig implements AuditorAware<String> {
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
                 .map(principal -> {
-                    if (principal instanceof CustomUserDetails c) {
-                        return c.getMember().getId().toString();
+                    if (principal instanceof CustomUserDetails customUser) {
+                        return customUser.getMember().getGoogleEmail(); // JWT 유저네임
                     }
-                    if (principal instanceof DefaultOAuth2User) {
-                        return ((DefaultOAuth2User) principal).getAttribute("email");
+                    if (principal instanceof DefaultOAuth2User oAuth2User) {
+                        return oAuth2User.getAttribute("email"); // 구글 이메일
                     }
                     return null;
                 });

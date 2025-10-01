@@ -75,7 +75,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         jwtUtil.extractAccessToken(request)
                 .filter(jwtUtil::isTokenValid) // 토큰을 검증
-                .filter(accessToken -> !jwtUtil.isTokenInBlackList(accessToken)) // 블랙리스틑 여부 판단
+                .filter(accessToken -> !jwtUtil.isTokenInBlackList(accessToken)) // 블랙리스트 여부 판단 -> 이거 빼도 되려나?
                 .flatMap(jwtUtil::extractGoogleId) // 토큰에서 구글 아이디 추출
                 .map(customUserDetailsService::loadUserByUsername) // db 에서 존재하는 지 확인
                 .ifPresent(this::saveAuthentication); // -> 통과하면 로그인 성공! -> 세션에 로그인 멤버 저장
