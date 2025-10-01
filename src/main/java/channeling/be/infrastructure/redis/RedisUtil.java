@@ -23,8 +23,14 @@ public class RedisUtil {
     @Value("${jwt.google.access.expiration}")
     private Long googleAccessExpiration;
 
+    /** redis에 저장하는 구글 리프레시의 지속 시간 **/
+    @Value("${jwt.google.refresh.expiration}")
+    private Long googleRefreshExpiration;
+
     /** Redis에 저장할 구글 액세스 토큰 키 접두사 */
     private final static String GOOGLE_ACCESS_TOKEN_PREFIX = "GOOGLE_AT_";
+    /** Redis에 저장할 구글 리프레시 토큰 키 접두사 */
+    private final static String GOOGLE_REFRESH_TOKEN_PREFIX = "GOOGLE_RT_";
 
 
     /**
@@ -82,6 +88,16 @@ public class RedisUtil {
         String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
         stringRedisTemplate.opsForValue().set(key, googleAccessToken, Duration.ofSeconds(googleAccessExpiration)); // 덮어씌우기
     }
+    /**
+     * 멤버 ID를 키로 하여 구글 리프레시 토큰을 Redis에 만료시간과 함께 저장합니다.
+     *
+     * @param memberId 멤버의 고유 ID
+     * @param googleRefreshToken 구글 액세스 토큰
+     */
+    public void saveGoogleRefreshAccessToken(Long memberId, String googleRefreshToken) {
+        String key = GOOGLE_REFRESH_TOKEN_PREFIX + memberId;
+        stringRedisTemplate.opsForValue().set(key, googleRefreshToken, Duration.ofSeconds(googleRefreshExpiration)); // 덮어씌우기
+    }
 
     /**
      * 멤버 ID로 저장된 구글 액세스 토큰을 조회합니다.
@@ -91,6 +107,16 @@ public class RedisUtil {
      */
     public String getGoogleAccessToken(Long memberId) {
         String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
+        return stringRedisTemplate.opsForValue().get(key);
+    }
+    /**
+     * 멤버 ID로 저장된 구글 리프레시 토큰을 조회합니다.
+     *
+     * @param memberId 멤버의 고유 ID
+     * @return 저장된 구글 액세스 토큰 (없으면 null)
+     */
+    public String getGoogleRefreshToken(Long memberId) {
+        String key = GOOGLE_REFRESH_TOKEN_PREFIX + memberId;
         return stringRedisTemplate.opsForValue().get(key);
     }
 

@@ -16,6 +16,21 @@ public interface JwtUtil {
      * @return 생성된 액세스 토큰 문자열
      */
     String createAccessToken(Member member);
+    /**
+     * 회원 정보를 기반으로 리프레시 토큰을 생성합니다.
+     * @param member 토큰 생성 대상 회원 정보
+     * @return 생성된 액세스 토큰 문자열
+     */
+    String createRefreshToken(Member member);
+
+    /**
+     * 주어진 회원 정보와 리프레시 토큰을 검증한 뒤,
+     * 새로운 액세스 토큰을 재발급합니다.
+     *
+     * @param refreshToken  유효성을 검증할 리프레시 토큰
+     * @return 재발급된 액세스 토큰 문자열
+     */
+    String reissueAccessToken(String refreshToken);
 
 
     /**
@@ -31,6 +46,8 @@ public interface JwtUtil {
      * @return 회원 ID가 존재하면 Optional에 담아 반환, 없으면 빈 Optional
      */
     Optional<String> extractGoogleId(String accessToken);
+
+    Optional<Long> extractMemberId(String token);
 
     /**
      * HTTP 응답 헤더에 액세스 토큰을 설정합니다.

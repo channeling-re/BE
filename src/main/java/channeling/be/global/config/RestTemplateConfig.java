@@ -10,6 +10,15 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfig {
+
+	@Bean
+	public RestTemplate googleRestTemplate() {
+		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+		factory.setConnectTimeout(5000);
+		factory.setReadTimeout(5000);
+
+		return new RestTemplate(factory);
+	}
 	@Bean
 	public RestTemplate restTemplate(){
 		RestTemplate restTemplate = new RestTemplate();
