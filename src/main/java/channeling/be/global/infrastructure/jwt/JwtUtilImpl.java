@@ -37,16 +37,20 @@ public class JwtUtilImpl implements JwtUtil {
     /** 액세스 토큰 만료 시간 */
     @Value("${jwt.access.expiration}")
     private Long accessExpiration;
+    /** 임시 토큰 만료 시간 */
+    @Value("${jwt.temp.expiration}")
+    private Long tempExpiration;
 
     /** HTTP 요청/응답 헤더에 사용할 액세스 토큰 키 이름 */
     @Value("${jwt.access.header}")
     private String accessHeader;
 
-    public static String BLACKLIST_ACCESS_TOKEN_PREFIX = "BL_AT_";
+    public static String BLACKLIST_TOKEN_PREFIX = "BL_AT_";
 
 
     /** JWT subject 값 - 액세스 토큰 구분용 */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+    private static final String TEMP_TOKEN_SUBJECT = "Temp";
     /** JWT 클레임 키 - 구글 아이디 */
     private static final String GOOGLE_CLAIM = "googleId";
 
@@ -65,6 +69,16 @@ public class JwtUtilImpl implements JwtUtil {
                 .withClaim(GOOGLE_CLAIM, member.getGoogleId())
                 .sign(Algorithm.HMAC512(secret));
     }
+
+    @Override
+    public String createTempToken(Member member) {
+        return JWT.create()
+                .withSubject(TEMP_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(System.currentTimeMillis() + tempExpiration * 1000))
+                .withClaim(USERID_CLAIM, member.getId())
+                .sign(Algorithm.HMAC512(secret));
+    };
+
 
 
     @Override
@@ -92,6 +106,19 @@ public class JwtUtilImpl implements JwtUtil {
             return Optional.empty();
         }
     }
+    @Override
+    public Optional<Long> extractMemberId(String token) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret))
+                    .build()
+                    .verify(token)
+                    .getClaim(USERID_CLAIM)
+                    .asLong());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Optional.empty();
+        }
+    }
 
     @Override
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
@@ -108,7 +135,7 @@ public class JwtUtilImpl implements JwtUtil {
             throw new JwtHandler("만료된 JWT 토큰입니다.");
 
         } catch (Exception e) {
-            throw new JwtHandler("유효하지 않은 Token입니다.");
+            throw new JwtHandler("유효하지 않은 Token입니다. : "+e.getMessage());
 
         }
     }
@@ -116,7 +143,7 @@ public class JwtUtilImpl implements JwtUtil {
     @Override
     public boolean isTokenInBlackList(String accessToken) {
         // Redis에서 블랙리스트로 저장된 토큰 확인
-        String blacklistToken = redisUtil.getData( BLACKLIST_ACCESS_TOKEN_PREFIX + accessToken);
+        String blacklistToken = redisUtil.getData( BLACKLIST_TOKEN_PREFIX + accessToken);
 
         if (blacklistToken != null) {
             throw new JwtHandler("블랙리스트 처리 되었거나 로그아웃된 Token입니다.");

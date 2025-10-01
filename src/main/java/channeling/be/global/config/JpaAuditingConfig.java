@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 @Configuration
 public class JpaAuditingConfig {
     @Bean
-    public AuditorAware<DefaultOAuth2User> auditorProvider() {
+    public AuditorAware<String> auditorProvider() {
         return new AuditorAwareConfig();
     }
 }

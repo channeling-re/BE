@@ -17,6 +17,13 @@ public interface JwtUtil {
      */
     String createAccessToken(Member member);
 
+    /**
+     * 회원 정보를 기반으로 액세스 토큰을 생성합니다.
+     * @param member 토큰 생성 대상 회원 정보
+     * @return 생성된 액세스 토큰 문자열
+     */
+    String createTempToken(Member member);
+
 
     /**
      * HTTP 요청 헤더에서 액세스 토큰을 추출합니다.
@@ -31,6 +38,13 @@ public interface JwtUtil {
      * @return 회원 ID가 존재하면 Optional에 담아 반환, 없으면 빈 Optional
      */
     Optional<String> extractGoogleId(String accessToken);
+
+    /**
+     * 토큰에서 회원 ID(주로 userId)를 추출합니다.
+     * @param token 액세스 토큰 문자열
+     * @return 회원 ID가 존재하면 Optional에 담아 반환, 없으면 빈 Optional
+     */
+    Optional<Long> extractMemberId(String token);
 
     /**
      * HTTP 응답 헤더에 액세스 토큰을 설정합니다.

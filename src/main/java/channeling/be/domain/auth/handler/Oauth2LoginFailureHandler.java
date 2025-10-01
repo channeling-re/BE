@@ -1,5 +1,6 @@
 package channeling.be.domain.auth.handler;
 
+import channeling.be.global.infrastructure.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +17,21 @@ import java.io.IOException;
 @Component
 public class Oauth2LoginFailureHandler implements AuthenticationFailureHandler {
 
+    private final JwtUtil jwtUtil;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
+
         log.error("로그인 실패");
         exception.getStackTrace();
-
         // 프론트 응답 생성
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/auth/callback")
                 .queryParam("token", "")
-                .queryParam("message", "Fail")
+                .queryParam("message", exception.getMessage())
                 .build()
                 .toUriString();
+
 
         response.sendRedirect(targetUrl);
 

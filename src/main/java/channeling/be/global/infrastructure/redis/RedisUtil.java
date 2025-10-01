@@ -1,5 +1,6 @@
 package channeling.be.global.infrastructure.redis;
 
+import channeling.be.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,11 +23,20 @@ public class RedisUtil {
     /** redis에 저장하는 구글 엑세스의 지속 시간 **/
     @Value("${jwt.google.access.expiration}")
     private Long googleAccessExpiration;
+    /** 리프레시 토큰 만료 시간 */
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshTokenExpiration;
+    /** 액세스 토큰 만료 시간 */
+    @Value("${jwt.access.expiration}")
+    private Long accessTokenExpiration;
+
 
     /** Redis에 저장할 구글 액세스 토큰 키 접두사 */
     private final static String GOOGLE_ACCESS_TOKEN_PREFIX = "GOOGLE_AT_";
+    /** Redis에 저장할 구글 리프레시 토큰 키 접두사 */
+    private final static String GOOGLE_REFRESH_TOKEN_PREFIX = "GOOGLE_RT_";
 
-
+    public static String BLACKLIST_TOKEN_PREFIX = "BL_AT_";
     /**
      *  key로부터 value 조회
      *  @return 값이 없으면 null
@@ -93,10 +103,55 @@ public class RedisUtil {
         String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
         return stringRedisTemplate.opsForValue().get(key);
     }
+    /**
+     * 멤버 ID로 저장된 구글 리프레시 토큰을 조회합니다.
+     *
+     * @param memberId 멤버의 고유 ID
+     * @return 저장된 구글 리스페시 토큰 (없으면 null)
+     */
+    public String getGoogleRefreshToken(Long memberId) {
+        String key = GOOGLE_REFRESH_TOKEN_PREFIX + memberId;
+        return stringRedisTemplate.opsForValue().get(key);
+    }
+    /**
+     *  입력받은 토큰을 블랙리스트에 넣습니다.
+     * @param token 블래리스트에 넣을 토큰 값
+     * @return 생성된 블랙리스트 토큰 문자열
+     */
+    public void addRefreshTokenToBlackList(String token) {
+        String key = BLACKLIST_TOKEN_PREFIX + token;
+        stringRedisTemplate.opsForValue().set(
+                key,
+                String.valueOf(1),
+                Duration.ofSeconds(refreshTokenExpiration)
+        );
+    }
+    /**
+     *  입력받은 토큰을 블랙리스트에 넣습니다.
+     * @param token 블래리스트에 넣을 토큰 값
+     * @return 생성된 블랙리스트 토큰 문자열
+     */
+    public void addAccessTokenToBlackList(String token) {
+        String key = BLACKLIST_TOKEN_PREFIX + token;
+        stringRedisTemplate.opsForValue().set(
+                key,
+                String.valueOf(1),
+                Duration.ofSeconds(accessTokenExpiration)
+        );
+    }
 
     public Long getGoogleAccessTokenExpire(Long memberId) {
         String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
         // TTL (Time To Live)을 초 단위로 가져옴
         return stringRedisTemplate.getExpire(key, TimeUnit.SECONDS);
+    }
+
+    public void deleteGoogleAccessToken(Long memberId) {
+        String key = GOOGLE_ACCESS_TOKEN_PREFIX + memberId;
+        deleteData(key);
+    }
+    public void deleteGoogleRefreshToken(Long memberId) {
+        String key = GOOGLE_REFRESH_TOKEN_PREFIX + memberId;
+        deleteData(key);
     }
 }

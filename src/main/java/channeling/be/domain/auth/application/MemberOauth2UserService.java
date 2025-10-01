@@ -4,7 +4,9 @@ import channeling.be.domain.channel.application.ChannelService;
 import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.member.application.MemberService;
 import channeling.be.domain.member.domain.Member;
+import channeling.be.domain.member.domain.repository.MemberRepository;
 import channeling.be.global.infrastructure.redis.RedisUtil;
+import channeling.be.response.exception.handler.JwtHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class MemberOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final MemberService memberService;
     private final ChannelService channelService;
+    private final MemberRepository memberRepository;
     private final RedisUtil redisUtil;
 
     @Override
@@ -37,6 +41,8 @@ public class MemberOauth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
         Map<String, Object> memberAttribute = oAuth2User.getAttributes();
+
+
 
         // TODO [지우기] 인증 사용자 정보 샘플
         System.out.println(" 엑세스 토큰 " + userRequest.getAccessToken().getTokenValue());

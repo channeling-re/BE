@@ -3,7 +3,9 @@ package channeling.be.domain.auth.handler;
 import channeling.be.domain.auth.application.MemberOauth2UserService;
 import channeling.be.domain.auth.application.MemberOauth2UserService.LoginResult;
 import channeling.be.domain.member.application.MemberService;
+import channeling.be.domain.member.domain.repository.MemberRepository;
 import channeling.be.global.infrastructure.jwt.JwtUtil;
+import channeling.be.response.exception.handler.JwtHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +29,7 @@ import java.util.Map;
 @Component
 public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final ObjectMapper om;
+    private final MemberRepository memberRepository;
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final JwtUtil jwtUtil;    // JWT 토큰 생성기
     private final MemberService memberService;
@@ -59,6 +61,30 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
          * ------------------------------------------------- */
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> attrs = oauthUser.getAttributes(); // 멤버 속성
+
+
+        // 2. DB에서 회원 조회 (sub 또는 provider id 기준)
+        String googleId = attrs.get("sub").toString();
+
+        // 3. 회원 탈퇴 여부 확인
+        memberRepository.findByGoogleId(googleId).ifPresent(member -> {
+            if (member.getIsDeleted()) {
+
+                // 프론트 응답 생성
+                String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/auth/callback")
+                        .queryParam("token", jwtUtil.createTempToken(member)) // 재활성화를 위한 임시 토큰 발급
+                        .queryParam("message", "Deleted member")
+                        .build()
+                        .toUriString();
+
+                try {
+                    response.sendRedirect(targetUrl);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         log.info("컨텍스트에서 토큰 내의 회원 정보 추출 = {}", attrs);
 
 
