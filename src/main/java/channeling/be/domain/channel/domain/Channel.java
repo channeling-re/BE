@@ -3,6 +3,7 @@ package channeling.be.domain.channel.domain;
 import channeling.be.domain.common.BaseEntity;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.video.domain.VideoCategory;
+import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,19 +35,19 @@ public class Channel extends BaseEntity {
     @Column(nullable = false)
     private Long view; // 조회수
 
-    @Column(nullable = false)
+    @Column()
     private Long likeCount; // 좋아요 수
 
     @Column(nullable = false)
     private Long subscribe; // 구독자 수
 
-    @Column(nullable = false)
+    @Column
     private Long share; // 공유 수
 
     @Column(nullable = false)
     private Long videoCount; // 영상 수
 
-    @Column(nullable = false)
+    @Column
     private Long comment; // 체널 총 댓글 수
 
     @Column(nullable = false, length = 150)
@@ -55,10 +56,10 @@ public class Channel extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime joinDate; // 채널 가입일
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String target; // 시청자 타겟
 
-    @Column(length = 500, nullable = false)
+    @Column(length = 500)
     private String concept; // 채널 컨셉
 
     @Column(nullable = false, length = 255)
@@ -78,27 +79,26 @@ public class Channel extends BaseEntity {
         this.target = target;
     }
 
-    public void updateChannelStats(Long totalLikeCount, Long totalCommentCount) {
+    // 비디오, 통계관련 컬럼 업데이트
+    public void updateChannelStats(Long totalLikeCount, Long totalCommentCount, String topCategory) {
+        // this.share=shares; // TODO : 추후 공유수 반영
         this.likeCount = totalLikeCount;
         this.comment = totalCommentCount;
+        this.channelHashTag = VideoCategory.ofId(topCategory);
         this.channelUpdateAt = LocalDateTime.now();
     }
 
-    public void updateChannelInfo(String title, String channelId, String uploadPlaylistId, String profileImageUrl, String channelUrl, LocalDateTime publishedAt, Long viewCount, Long subscriberCount, Long videoCount,
-        long likeCount, long commentCount,String topCategoryId,long shares) {
-        this.name = title;
-        this.youtubeChannelId = channelId;
-        this.youtubePlaylistId = uploadPlaylistId;
-        this.image = profileImageUrl;
-        this.link = channelUrl;
-        this.joinDate = publishedAt;
-        this.view = viewCount;
-        this.subscribe = subscriberCount;
-        this.videoCount = videoCount;
-        this.likeCount = likeCount;
-        this.comment = commentCount;
-        this.channelUpdateAt = LocalDateTime.now();
-        this.channelHashTag = VideoCategory.ofId(topCategoryId);
-        this.share=shares;
+    // 유튜브 채널 정보 업데이트
+    public void updateByYoutube(YoutubeChannelResDTO.Item item) {
+        this.name = item.getSnippet().getTitle();
+        this.youtubeChannelId = item.getId();
+        this.youtubePlaylistId = item.getContentDetails().getRelatedPlaylists().getUploads();
+        this.image = item.getSnippet().getThumbnails().getDefaultThumbnail().getUrl();
+        this.link = "https://www.youtube.com/channel/" + item.getId();
+        this.joinDate = item.getSnippet().getPublishedAt();
+        this.view = item.getStatistics().getViewCount();
+        this.subscribe = item.getStatistics().getSubscriberCount();
+        this.videoCount = item.getStatistics().getVideoCount();
     }
+
 }

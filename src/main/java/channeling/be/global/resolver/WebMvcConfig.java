@@ -1,6 +1,6 @@
 package channeling.be.global.resolver;
 
-import channeling.be.domain.auth.annotation.LoginMemberArgumentResolver;
+import channeling.be.global.auth.annotation.LoginMemberArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

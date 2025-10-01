@@ -1,6 +1,6 @@
 package channeling.be.domain.member.application;
 
-import channeling.be.domain.auth.application.MemberOauth2UserService;
+import channeling.be.global.auth.application.MemberOauth2UserService;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.member.presentation.MemberResDTO;
 import static channeling.be.domain.member.presentation.MemberReqDTO.*;

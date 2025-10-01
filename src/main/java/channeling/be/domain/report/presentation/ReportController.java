@@ -1,6 +1,6 @@
 package channeling.be.domain.report.presentation;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.comment.domain.CommentType;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.report.application.ReportService;

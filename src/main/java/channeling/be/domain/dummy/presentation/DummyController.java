@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import channeling.be.domain.auth.annotation.LoginMember;
 import channeling.be.domain.comment.domain.CommentType;
-import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.report.application.ReportService;
 import channeling.be.domain.report.domain.PageType;
 import channeling.be.domain.report.domain.Report;
@@ -19,7 +17,6 @@ import channeling.be.domain.video.application.VideoService;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.ApiResponse;
 import channeling.be.response.exception.handler.ReportHandler;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/dummys")

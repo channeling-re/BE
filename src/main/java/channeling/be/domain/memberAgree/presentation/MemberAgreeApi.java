@@ -1,6 +1,6 @@
 package channeling.be.domain.memberAgree.presentation;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.response.exception.handler.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
