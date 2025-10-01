@@ -1,4 +1,4 @@
-package channeling.be.domain.auth.presentation;
+package channeling.be.global.auth.presentation;
 
 
 public class OauthRes {

@@ -1,6 +1,6 @@
-package channeling.be.domain.auth.presentation;
+package channeling.be.global.auth.presentation;
 
-import channeling.be.global.infrastructure.jwt.JwtUtil;
+import channeling.be.infrastructure.jwt.JwtUtil;
 import channeling.be.response.exception.handler.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

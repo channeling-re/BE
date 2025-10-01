@@ -1,4 +1,4 @@
-package channeling.be.domain.auth.presentation;
+package channeling.be.global.auth.presentation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
