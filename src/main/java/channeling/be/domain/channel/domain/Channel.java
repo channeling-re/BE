@@ -61,7 +61,7 @@ public class Channel extends BaseEntity {
     @Column(length = 500, nullable = false)
     private String concept; // 채널 컨셉
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255)
     private String image; // 채널 프로필 이미지
 
     @Enumerated(EnumType.STRING)
