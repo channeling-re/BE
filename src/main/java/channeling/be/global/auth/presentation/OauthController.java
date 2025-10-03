@@ -1,5 +1,6 @@
 package channeling.be.global.auth.presentation;
 
+import channeling.be.global.auth.application.OauthService;
 import channeling.be.infrastructure.jwt.JwtUtil;
 import channeling.be.response.exception.handler.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/oauth")
 public class OauthController {
     private final JwtUtil jwtUtil;
+    private final OauthService oauthService;
+
 
     @PostMapping("/reissue")
     public ApiResponse<OauthRes.ReIssueToken> reIssueToken(@RequestBody OauthReq.ReIssueToken request) {
         String reissuedAccessToken = jwtUtil.reissueAccessToken(request.refreshToken);
         return ApiResponse.onSuccess(new OauthRes.ReIssueToken(reissuedAccessToken));
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(@RequestBody OauthReq.Logout request) {
+        return ApiResponse.onSuccess(oauthService.logout(request.getRefreshToken()));
     }
 
 }

@@ -11,4 +11,11 @@ public class OauthReq {
         @Schema(type = "string", description = "로그인시 받았던 리프레시 토큰")
         String refreshToken; //리프레시 토큰
     }
+
+    @Getter
+    public static class Logout{
+        @NotNull(message = "입력 토큰은 null일 수 없습니다.") // null 방지
+        @Schema(type = "string", description = "로그인시 받았던 리프레시 토큰")
+        String refreshToken; //리프레시 토큰
+    }
 }

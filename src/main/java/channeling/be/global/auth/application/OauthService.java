@@ -1,7 +1,7 @@
-package channeling.be.domain.auth.application;
+package channeling.be.global.auth.application;
 
-import channeling.be.global.infrastructure.jwt.JwtUtil;
-import channeling.be.global.infrastructure.redis.RedisUtil;
+import channeling.be.infrastructure.jwt.JwtUtil;
+import channeling.be.infrastructure.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
