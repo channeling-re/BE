@@ -1,6 +1,5 @@
 package channeling.be.global.auth.handler;
 
-import channeling.be.global.infrastructure.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Component
 public class Oauth2LoginFailureHandler implements AuthenticationFailureHandler {
-
-    private final JwtUtil jwtUtil;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {

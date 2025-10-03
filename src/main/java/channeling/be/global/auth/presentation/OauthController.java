@@ -1,5 +1,7 @@
 package channeling.be.global.auth.presentation;
 
+import channeling.be.domain.member.domain.Member;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.global.auth.application.OauthService;
 import channeling.be.infrastructure.jwt.JwtUtil;
 import channeling.be.response.exception.handler.ApiResponse;
@@ -28,4 +30,12 @@ public class OauthController {
         return ApiResponse.onSuccess(oauthService.logout(request.getRefreshToken()));
     }
 
+    @PostMapping("/withdrawal")
+    public ApiResponse<String> withdrawal(@LoginMember Member member, @RequestBody OauthReq.withdrawal request ) {
+        return ApiResponse.onSuccess(oauthService.withdrawMember(member,request));
+    }
+    @PostMapping("/resign_up")
+    public ApiResponse<String> withdrawal(@RequestBody OauthReq.resignation request ) {
+        return ApiResponse.onSuccess(oauthService.resignMember(request));
+    }
 }

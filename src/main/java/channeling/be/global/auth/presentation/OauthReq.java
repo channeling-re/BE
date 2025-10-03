@@ -18,4 +18,20 @@ public class OauthReq {
         @Schema(type = "string", description = "로그인시 받았던 리프레시 토큰")
         String refreshToken; //리프레시 토큰
     }
+    @Getter
+    public static class withdrawal {
+        @NotNull(message = "입력 토큰은 null일 수 없습니다.") // null 방지
+        @Schema(type = "string", description = "로그인시 받았던 엑세스 토큰")
+        String accessToken; //리프레시 토큰
+        @NotNull(message = "입력 토큰은 null일 수 없습니다.") // null 방지
+        @Schema(type = "string", description = "로그인시 받았던 리프레시 토큰")
+        String refreshToken; //리프레시 토큰
+    }
+
+    @Getter
+    public static class resignation {
+        @NotNull(message = "입력 토큰은 null일 수 없습니다.") // null 방지
+        @Schema(type = "string", description = "로그인시 받았던 임시 토큰")
+        String tempToken; //임시 토큰
+    }
 }

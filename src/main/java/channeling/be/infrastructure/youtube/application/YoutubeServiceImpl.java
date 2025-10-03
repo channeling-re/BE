@@ -10,8 +10,10 @@ import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 import channeling.be.infrastructure.youtube.res.YoutubePlayListResDTO;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.YoutubeHandler;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,7 +33,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class YoutubeServiceImpl implements YoutubeService {
 
-    private final RestTemplate restTemplate;
+    @Resource(name = "noRedirectRestTemplate")
+    private RestTemplate restTemplate;
     private final VideoService videoService;
 
     private static final String YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";
