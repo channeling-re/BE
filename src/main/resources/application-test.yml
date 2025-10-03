@@ -1,0 +1,45 @@
+spring:
+  # --- 데이터베이스 설정 ---
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    show-sql: false
+
+  # --- Redis & Kafka 설정 (Placeholder) ---
+  data:
+    redis:
+      host: localhost # DynamicPropertySource에 의해 덮어쓰여질 값
+      port: 6379      # DynamicPropertySource에 의해 덮어쓰여질 값
+
+  kafka:
+    bootstrap-servers: localhost:9092 # DynamicPropertySource에 의해 덮어쓰여질 값
+    consumer:
+      group-id: test-group-${random.uuid}
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+
+# --- 로깅 레벨 설정 ---
+logging:
+  level:
+    channeling.be: DEBUG
+    org.hibernate.SQL: DEBUG # 실행되는 SQL 쿼리 출력
+    # org.hibernate.type.descriptor.sql: TRACE # SQL 파라미터 값까지 보려면 주석 해제
+
+# --- 기타 테스트용 설정 ---
+jwt:
+  secret: "test-secret-key-for-channeling-project-1234567890"
+  access:
+    expiration: 3600
+  refresh:
+    expiration: 86400
