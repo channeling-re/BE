@@ -5,6 +5,7 @@ import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.member.application.MemberService;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.infrastructure.redis.RedisUtil;
+import channeling.be.domain.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class MemberOauth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final MemberService memberService;
     private final ChannelService channelService;
+    private final MemberRepository memberRepository;
     private final RedisUtil redisUtil;
 
     @Override

@@ -19,8 +19,8 @@ public class RestTemplateConfig {
 
 		return new RestTemplate(factory);
 	}
-	@Bean
-	public RestTemplate restTemplate(){
+	@Bean("noRedirectRestTemplate")
+	public RestTemplate noRedirectRestTemplate(){
 		RestTemplate restTemplate = new RestTemplate();
 
 		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();

@@ -43,6 +43,9 @@ public class JwtUtilImpl implements JwtUtil {
     /** 액세스 토큰 만료 시간 */
     @Value("${jwt.access.expiration}")
     private Long accessExpiration;
+    /** 임시 토큰 만료 시간 */
+    @Value("${jwt.temp.expiration}")
+    private Long tempExpiration;
 
 
     /** 리프레시 토큰 만료 시간 */
@@ -58,6 +61,7 @@ public class JwtUtilImpl implements JwtUtil {
 
     /** JWT subject 값 - 액세스 토큰 구분용 */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+    private static final String TEMP_TOKEN_SUBJECT = "Temp";
 
     /** JWT subject 값 - 리프레시 토큰 구분용 */
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
@@ -80,6 +84,16 @@ public class JwtUtilImpl implements JwtUtil {
                 .withClaim(GOOGLE_CLAIM, member.getGoogleId())
                 .sign(Algorithm.HMAC512(secret));
     }
+
+    @Override
+    public String createTempToken(Member member) {
+        return JWT.create()
+                .withSubject(TEMP_TOKEN_SUBJECT)
+                .withExpiresAt(new Date(System.currentTimeMillis() + tempExpiration * 1000))
+                .withClaim(USERID_CLAIM, member.getId())
+                .sign(Algorithm.HMAC512(secret));
+    };
+
 
     @Override
     public String createRefreshToken(Member member) {
@@ -136,7 +150,6 @@ public class JwtUtilImpl implements JwtUtil {
             return Optional.empty();
         }
     }
-
     @Override
     public Optional<Long> extractMemberId(String token) {
         try {
@@ -166,7 +179,7 @@ public class JwtUtilImpl implements JwtUtil {
             throw new JwtHandler("만료된 JWT 토큰입니다.");
 
         } catch (Exception e) {
-            throw new JwtHandler("유효하지 않은 Token입니다.");
+            throw new JwtHandler("유효하지 않은 Token입니다. : "+e.getMessage());
 
         }
     }

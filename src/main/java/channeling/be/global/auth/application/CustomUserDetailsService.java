@@ -18,6 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String googleId) throws UsernameNotFoundException {
         Member member = memberRepository.findByGoogleId(googleId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with googleId: " + googleId ));
+
+        if (member.getIsDeleted()) {
+            throw new UsernameNotFoundException("Deleted user found with googleId: " + googleId);
+        }
         return new CustomUserDetails(member);
     }
 }
