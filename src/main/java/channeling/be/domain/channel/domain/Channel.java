@@ -6,6 +6,7 @@ import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.infrastructure.youtube.res.YoutubeChannelResDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
@@ -33,19 +34,22 @@ public class Channel extends BaseEntity {
     private String name; // 채널 이름
 
     @Column(nullable = false)
-    private Long view; // 조회수
+    @Builder.Default
+    private Long view = 1L; // 조회수
 
-    @Column()
+    @Column
     private Long likeCount; // 좋아요 수
 
     @Column(nullable = false)
-    private Long subscribe; // 구독자 수
+    @Builder.Default
+    private Long subscribe = 0L; // 구독자 수
 
     @Column
     private Long share; // 공유 수
 
     @Column(nullable = false)
-    private Long videoCount; // 영상 수
+    @Builder.Default
+    private Long videoCount = 0L; // 영상 수
 
     @Column
     private Long comment; // 체널 총 댓글 수
@@ -62,7 +66,7 @@ public class Channel extends BaseEntity {
     @Column(length = 500)
     private String concept; // 채널 컨셉
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String image; // 채널 프로필 이미지
 
     @Enumerated(EnumType.STRING)
