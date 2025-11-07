@@ -7,14 +7,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.ToString;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
+@ToString
 public class YoutubeChannelResDTO {
 	private List<Item> items;
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class Item {
 		private String id;
 		private Snippet snippet;
@@ -24,6 +28,7 @@ public class YoutubeChannelResDTO {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class Snippet {
 		private String title;
 
@@ -36,8 +41,8 @@ public class YoutubeChannelResDTO {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class Thumbnails {
-		@JsonProperty("default")
 		private Thumbnail defaultThumbnail;
 		// private Thumbnail medium;
 		// private Thumbnail high;
@@ -45,6 +50,7 @@ public class YoutubeChannelResDTO {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class Thumbnail {
 		private String url;
 		private int width;
@@ -53,6 +59,7 @@ public class YoutubeChannelResDTO {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class Statistics {
 		private Long viewCount;
 		private Long subscriberCount;
@@ -61,12 +68,14 @@ public class YoutubeChannelResDTO {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class ContentDetails {
 		private RelatedPlaylists relatedPlaylists;
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Getter
+	@ToString
 	public static class RelatedPlaylists {
 		private String uploads;
 		// private String likes;
