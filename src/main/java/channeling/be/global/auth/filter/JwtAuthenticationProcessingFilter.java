@@ -38,8 +38,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             "/v3/api-docs/**",
             "/members/login/**",
             "/dummys/**",
-            "/actuator/health",
-            "/oauth/**"
+            "/actuator/**",
+            "/oauth/**",
     };
 
     /**
