@@ -43,3 +43,7 @@ jwt:
     expiration: 3600
   refresh:
     expiration: 86400
+
+
+youtube-url:
+  channel: http://localhost

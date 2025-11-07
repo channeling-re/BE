@@ -16,3 +16,6 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: 6379
+
+youtube-url:
+  channel: https://www.googleapis.com/youtube/v3

@@ -13,7 +13,7 @@ import channeling.be.response.exception.handler.YoutubeHandler;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,7 +37,8 @@ public class YoutubeServiceImpl implements YoutubeService {
     private RestTemplate restTemplate;
     private final VideoService videoService;
 
-    private static final String YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";
+    @Value("${youtube-url.channel}")
+    private String youtubeApiBaseUrl;
 
     // 채널과 연관된 비디오들을 동기화하는 메서드
     public void syncVideos(YoutubeChannelResDTO.Item item, String accessToken, Channel channel) {
@@ -64,7 +65,7 @@ public class YoutubeServiceImpl implements YoutubeService {
     // 유튜브 API를 호출하여 채널의 정보를 가져오는 메서드
     public YoutubeChannelResDTO.Item syncChannel(String accessToken) {
         try {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(YOUTUBE_API_BASE_URL + "/channels")
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(youtubeApiBaseUrl + "/channels")
                     .queryParam("part", "snippet,contentDetails,statistics")
                     .queryParam("mine", true);
 
@@ -80,6 +81,7 @@ public class YoutubeServiceImpl implements YoutubeService {
 
             log.info("googleAccessToken: {}", accessToken);
             log.info("Channel Response: {}", response.getBody());
+            log.info("결과값: {}", response.getBody());
 
             YoutubeChannelResDTO youtubeResponse = response.getBody();
             if (youtubeResponse.getItems() == null || youtubeResponse.getItems().isEmpty()) {
@@ -136,7 +138,7 @@ public class YoutubeServiceImpl implements YoutubeService {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(accessToken);
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(YOUTUBE_API_BASE_URL + "/playlistItems")
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(youtubeApiBaseUrl + "/playlistItems")
                     .queryParam("part", "snippet,contentDetails")
                     .queryParam("playlistId", playlistId)
                     .queryParam("maxResults", 50);
@@ -172,7 +174,7 @@ public class YoutubeServiceImpl implements YoutubeService {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(accessToken);
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(YOUTUBE_API_BASE_URL + "/videos")
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(youtubeApiBaseUrl + "/videos")
                     .queryParam("part", "snippet,statistics")
                     .queryParam("id", ids);
 
