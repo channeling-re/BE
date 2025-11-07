@@ -68,6 +68,7 @@ dependencies {
     testImplementation "com.redis.testcontainers:testcontainers-redis-junit:1.6.4"
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation "org.testcontainers:testcontainers:1.19.0"
+    testImplementation "org.wiremock.integrations:wiremock-spring-boot:3.5.1"
 }
 
 tasks.named('test') {

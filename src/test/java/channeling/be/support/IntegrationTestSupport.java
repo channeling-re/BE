@@ -1,6 +1,8 @@
 package channeling.be.support;
 
-import org.springframework.boot.test.context.SpringBootTest;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -10,6 +12,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * 모든 통합 테스트에서 상속받는 추상 클래스입니다.
@@ -50,5 +55,17 @@ public abstract class IntegrationTestSupport {
         registry.add("spring.data.redis.host", () -> redisHost);
         registry.add("spring.data.redis.port", () -> redisPort);
         registry.add("spring.kafka.bootstrap-servers", () -> String.format("%s:%d", kafkaHost, kafkaPort));
+    }
+
+    protected Object awaitOneRecordValue(Consumer<String, Object> consumer, String topic, Duration timeout) {
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
+        while (System.currentTimeMillis() < deadline) {
+            ConsumerRecords<String, Object> records = consumer.poll(Duration.ofMillis(300));
+            for (ConsumerRecord<String, Object> rec : records.records(topic)) {
+                return rec.value();
+            }
+        }
+        fail("타임아웃 내에 토픽(" + topic + ")에서 메시지를 수신하지 못했습니다.");
+        return null; // unreachable
     }
 }
