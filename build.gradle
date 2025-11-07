@@ -44,9 +44,6 @@ dependencies {
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
-    // actuator
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
     // JWT
     implementation 'com.auth0:java-jwt:4.5.0'
     implementation 'com.auth0:jwks-rsa:0.20.0'
@@ -68,6 +65,10 @@ dependencies {
     testImplementation "com.redis.testcontainers:testcontainers-redis-junit:1.6.4"
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation "org.testcontainers:testcontainers:1.19.0"
+
+    // 모니터링
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

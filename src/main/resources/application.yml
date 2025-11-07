@@ -2,7 +2,7 @@ spring:
   application:
     name: channeling-be
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local}
+    active: ${SPRING_PROFILES_ACTIVE:local,monitor}
   config:
     import:
       - optional:classpath:/config/application-s3.yml
@@ -11,3 +11,6 @@ spring:
       - optional:classpath:/config/application-kafka.yml
 # optional: 접두사는 해당 파일이 없어도 에러가 발생하지 않도록 함
 # import: classpath:/config/*.yml
+
+server:
+  port: 8080
