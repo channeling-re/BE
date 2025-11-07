@@ -110,7 +110,7 @@ public class ChannelServiceImpl implements ChannelService {
                 })
                 .orElseGet(() -> channelRepository.save(ChannelConverter.toNewChannel(item, member)));
 
-        // 채널 생성/업데이트 메시지 발행
+        // 비디오 생성/업데이트 메시지 발행
         kafkaProducerService.sendVideoSyncRequest(new KafkaVideoSyncDto(item, googleAccessToken, channel));
 
         return channel;
