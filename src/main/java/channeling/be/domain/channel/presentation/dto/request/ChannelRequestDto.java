@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 public class ChannelRequestDto {
+    @Setter
     @Getter
     public static class EditChannelConceptReqDto{
         @NotNull(message = "채널 컨셉은 null일 수 없습니다.") // null 방지

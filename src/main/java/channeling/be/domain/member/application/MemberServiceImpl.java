@@ -6,7 +6,9 @@ import channeling.be.domain.member.presentation.MemberConverter;
 import channeling.be.domain.member.presentation.MemberResDTO;
 import channeling.be.domain.memberAgree.domain.MemberAgree;
 import channeling.be.domain.memberAgree.domain.repository.MemberAgreeRepository;
-import channeling.be.global.infrastructure.aws.S3Service;
+import channeling.be.global.auth.application.MemberOauth2UserService;
+import channeling.be.global.auth.application.MemberOauth2UserService.MemberResult;
+import channeling.be.infrastructure.aws.S3Service;
 import channeling.be.response.code.status.ErrorStatus;
 import channeling.be.response.exception.handler.MemberHandler;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static channeling.be.domain.auth.application.MemberOauth2UserService.*;
 import static channeling.be.domain.member.presentation.MemberReqDTO.*;
 
 @RequiredArgsConstructor

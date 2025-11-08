@@ -21,10 +21,10 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @CreatedBy
-    private String createdBy;
+//    @CreatedBy
+//    private String createdBy;
 
-    @LastModifiedBy
-    private String updatedBy;
+//    @LastModifiedBy
+//    private String updatedBy;
 }
 

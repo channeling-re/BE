@@ -1,10 +1,9 @@
 package channeling.be.domain.channel.presentation;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.channel.presentation.dto.request.ChannelRequestDto;
 import channeling.be.domain.channel.presentation.dto.response.ChannelResponseDto;
 import channeling.be.domain.member.domain.Member;
-import channeling.be.domain.video.domain.VideoCategory;
 import channeling.be.domain.video.domain.VideoType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

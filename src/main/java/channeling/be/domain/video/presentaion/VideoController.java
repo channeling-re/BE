@@ -1,6 +1,6 @@
 package channeling.be.domain.video.presentaion;
 
-import channeling.be.domain.auth.annotation.LoginMember;
+import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.member.domain.Member;
 import channeling.be.domain.video.application.VideoService;
 import channeling.be.response.exception.handler.ApiResponse;

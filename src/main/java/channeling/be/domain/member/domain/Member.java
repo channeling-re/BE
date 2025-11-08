@@ -6,6 +6,8 @@ import channeling.be.response.exception.handler.MemberHandler;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Builder
@@ -19,10 +21,10 @@ public class Member extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String nickname; // 닉네임
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String googleEmail; // 구글 이메일
 
-    @Column(length = 100)
+    @Column(length = 255)
     private String profileImage; // 프로필 이미지
 
     @Column(length = 100)
@@ -40,8 +42,29 @@ public class Member extends BaseEntity {
     @Column(length = 50)
     private String googleId; // 구글 아이디 (로그인 구별을 위한..)
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean isDeleted = false; // soft delete 여부
 
-    private enum SnsPatterns {
+    private LocalDateTime deletedAt;
+
+
+    // 탈퇴 처리
+    public void softDelete() {
+        if (!isDeleted) {
+            this.isDeleted = true;
+            this.deletedAt = LocalDateTime.now();
+        }
+    }
+    // 재가입 처리
+    public void resign() {
+        if (isDeleted) {
+            this.isDeleted = false;          // 다시 활성화
+            this.deletedAt = null;           // 삭제일자 초기화
+        }
+    }
+
+        private enum SnsPatterns {
         INSTAGRAM("^https?://(www\\.)?instagram\\.com/.*$"),
         TIKTOK("^https?://(www\\.)?tiktok\\.com/.*$"),
         FACEBOOK("^https?://(www\\.)?facebook\\.com/.*$"),
