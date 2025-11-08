@@ -18,7 +18,7 @@ jobs:
       - name: Checkout deploy-configs repository
         uses: actions/checkout@v4
         with:
-          repository: umc-8th-Channeling/DEPLOY-CONFIGS
+          repository: channeling-re/DEPLOY-CONFIGS
           path: deploy-configs
 
       # 2️⃣ S3에서 .env 파일 가져오기
