@@ -25,10 +25,12 @@ jobs:
       - name: Download .env from S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          PRIVATE_S3_BUCKET_NAME: ${{ secrets.PRIVATE_S3_BUCKET_NAME }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
         run: |
-          aws s3 cp s3://my-bucket/channeling/.env ./deploy-configs/.env
+          aws s3 cp s3://$S3_BUCKET_NAME/deploy/.env ./deploy-configs/.env
 
       # 3️⃣ Docker 로그인 (env 파일에서 DOCKER_USERNAME, DOCKER_PASSWORD 읽도록)
       - name: Login to Dockerhub
