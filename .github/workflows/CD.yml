@@ -37,7 +37,7 @@ jobs:
       - name: Login to Dockerhub
         working-directory: deploy-configs
         run: |
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          echo $DOCKER_ACCESS_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
 
       # 4️⃣ spring-app이 실행중이면 중지 & 삭제
       - name: Stop spring-app
