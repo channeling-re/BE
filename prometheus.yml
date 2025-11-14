@@ -1,6 +1,6 @@
 global:
   scrape_interval: 15s
-  scrape_timeout: 10s
+  scrape_timeout: 15s
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -10,6 +10,6 @@ scrape_configs:
   - job_name: 'spring'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:8081']  # Mac/Win 로컬. 리눅스면 'host.docker.internal' 대신 호스트 IP
+      - targets: ['host.docker.internal:8080']  # Mac/Win 로컬. 리눅스면 'host.docker.internal' 대신 호스트 IP
         labels:
           application: channeling-be

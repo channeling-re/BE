@@ -5,6 +5,7 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:local,monitor}
   config:
     import:
+      - optional:classpath:/config/application-monitor.yml
       - optional:classpath:/config/application-s3.yml
       - optional:classpath:/config/application-oauth.yml
       - optional:classpath:/config/application-jwt.yml
@@ -14,3 +15,6 @@ spring:
 
 server:
   port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
