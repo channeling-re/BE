@@ -2,6 +2,7 @@ package channeling.be.domain.member.presentation;
 
 import channeling.be.global.auth.annotation.LoginMember;
 import channeling.be.domain.member.domain.Member;
+import io.micrometer.core.instrument.Counter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import static channeling.be.domain.member.presentation.MemberResDTO.*;
 @Slf4j
 @RequestMapping("/members")
 public class MemberController implements MemberSwagger{
+
+    private final Counter helloCounter;
 
   	private final MemberService memberService;
     /**
@@ -45,6 +48,7 @@ public class MemberController implements MemberSwagger{
     @GetMapping("")
     public ApiResponse<getMemberInfo> getMemberInfo(
         @LoginMember Member member) {
+        helloCounter.increment();
         return ApiResponse.onSuccess(memberService.getMemberInfo(member));
     }
 

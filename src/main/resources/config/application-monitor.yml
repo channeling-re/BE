@@ -1,0 +1,18 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+#  server:
+#    port: 8080         # 운영 트래픽과 분리 권장
+#    address: 0.0.0.0     # 🔴 중요: 컨테이너에서 접근 가능하게 전체 바인딩
+#
+#  endpoint:
+#    health:
+#      show-details: when_authorized
+#  metrics:
+#    tags:                # 공통 라벨(서비스명/환경/지역 등)로 집계/필터에 유용
+#      application: channeling-be
+#      env: dev
+#      region: ap-northeast-2 # 멀티리전 적용 시 유용하다고 한다
