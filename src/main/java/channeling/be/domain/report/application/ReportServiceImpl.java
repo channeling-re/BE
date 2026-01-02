@@ -27,6 +27,7 @@ import channeling.be.response.exception.handler.TaskHandler;
 import channeling.be.response.exception.handler.VideoHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,9 @@ public class ReportServiceImpl implements ReportService {
     private final RedisUtil redisUtil;
     private final ReportDeleteService reportDeleteService;
     private final ChannelRepository channelRepository;
+    @Resource(name = "noRedirectRestTemplate")
+    private RestTemplate restTemplate; // 나중에 생성자로 넣기
+
 
     //환경변수에서 FASTAPI_URL 환경변수 불러오기
 	@Value("${FASTAPI_URL:http://localhost:8000}")
@@ -210,7 +214,6 @@ public class ReportServiceImpl implements ReportService {
     private Long sendPostToFastAPI(Long videoId, String googleAccessToken) {
 //
         // HTTP 요청 보내기
-        RestTemplate restTemplate = new RestTemplate();
         // url 설정
 		String url = UriComponentsBuilder
                 .fromHttpUrl(baseFastApiUrl+"/reports/v2")

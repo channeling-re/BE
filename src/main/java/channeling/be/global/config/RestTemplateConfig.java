@@ -3,38 +3,50 @@ package channeling.be.global.config;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import channeling.be.global.interceptor.RestTemplateLoggingInterceptor;
+import channeling.be.infrastructure.log.LogTrace;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@RequiredArgsConstructor
 public class RestTemplateConfig {
 
-	@Bean
-	public RestTemplate googleRestTemplate() {
-		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-		factory.setConnectTimeout(5000);
-		factory.setReadTimeout(5000);
+    private final LogTrace logTrace;
 
-		return new RestTemplate(factory);
+
+    @Bean
+	public RestTemplate googleRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
+
+        RestTemplate restTemplate = new RestTemplate(factory);
+        restTemplate.getInterceptors()
+                .add(new RestTemplateLoggingInterceptor(logTrace));
+        return restTemplate;
 	}
 	@Bean("noRedirectRestTemplate")
 	public RestTemplate noRedirectRestTemplate(){
-		RestTemplate restTemplate = new RestTemplate();
 
-		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-		factory.setConnectTimeout(5000);
-		factory.setReadTimeout(5000);
+            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory() {
+                @Override
+                protected void prepareConnection(
+                        HttpURLConnection connection,
+                        String httpMethod) throws IOException {
+                    super.prepareConnection(connection, httpMethod);
+                    connection.setInstanceFollowRedirects(false);
+                }
+            };
+            factory.setConnectTimeout(5000);
+            factory.setReadTimeout(5000);
 
-		restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory(){
-			@Override
-			protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
-				super.prepareConnection(connection, httpMethod);
-				connection.setInstanceFollowRedirects(false);		//리다이렉트를 따라가지 않도록 설정(shorts 판별만)
-			}
-		});
-
-		return restTemplate;
+            RestTemplate restTemplate = new RestTemplate(factory);
+            restTemplate.getInterceptors()
+                    .add(new RestTemplateLoggingInterceptor(logTrace));
+            return restTemplate;
 	}
 }

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class YoutubeServiceImpl implements YoutubeService {
 
     @Resource(name = "noRedirectRestTemplate")
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate; // 나중에 생성자로 넣기
     private final VideoService videoService;
 
     private static final String YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3";

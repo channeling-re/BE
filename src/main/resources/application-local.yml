@@ -1,13 +1,13 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}
+    url: ${MYSQL_HOST}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
