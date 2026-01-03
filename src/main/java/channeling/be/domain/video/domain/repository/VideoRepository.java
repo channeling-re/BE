@@ -1,5 +1,6 @@
 package channeling.be.domain.video.domain.repository;
 
+import channeling.be.domain.channel.domain.Channel;
 import channeling.be.domain.video.domain.Video;
 import channeling.be.domain.video.domain.VideoCategory;
 import org.springframework.data.domain.Page;
@@ -57,4 +58,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 	Optional<Video> findByMemberAndYoutubeVideoId(@Param("memberId") Long memberId, @Param("youtubeVideoId") String youtubeVideoId);
 
 	List<Video> findByChannelId(Long channelId);
+
+    List<Video> findByChannel(Channel channel);
 }
