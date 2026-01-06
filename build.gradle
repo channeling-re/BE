@@ -66,6 +66,10 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation "org.testcontainers:testcontainers:1.19.0"
 
+    //wiremock
+    testImplementation "org.wiremock:wiremock-standalone:3.5.2"
+
+
     // 모니터링
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
