@@ -22,8 +22,9 @@ jobs:
             # Docker 로그인
             echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-            # deploy-configs 디렉토리로 이동
+            # deploy-configs 디렉토리로 이동 및 최신화
             cd ~/DEPLOY-CONFIGS/
+            git pull origin main
 
             # S3에서 .env 파일 가져오기
             aws s3 cp s3://${{ secrets.PRIVATE_S3_BUCKET_NAME }}/deploy/.env ./.env
