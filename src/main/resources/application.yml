@@ -2,7 +2,7 @@ spring:
   application:
     name: channeling-be
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local,monitor}
+    active: ${SPRING_PROFILES_ACTIVE:local}
   config:
     import:
       - optional:classpath:/config/application-monitor.yml
