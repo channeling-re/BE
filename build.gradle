@@ -21,6 +21,8 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+
 }
 
 dependencies {
@@ -69,6 +71,10 @@ dependencies {
     // 모니터링
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // 웹훅
+    implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+
 }
 
 tasks.named('test') {
