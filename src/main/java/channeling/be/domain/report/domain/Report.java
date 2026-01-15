@@ -44,7 +44,7 @@ public class Report extends BaseEntity {
     private List<Comment> comments;
 
 
-    @OneToOne(mappedBy = "report", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "report", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Task task;
 
     @Column

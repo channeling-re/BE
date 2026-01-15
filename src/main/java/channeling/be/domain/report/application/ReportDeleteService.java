@@ -29,8 +29,7 @@ public class ReportDeleteService {
         report.getComments().clear();
         // 연관되 키워드 리스트 가져오기
         trendKeywordRepository.deleteAllByReportAndMember(report.getId(), member.getId());
-        // 연관된 task 삭제
-        report.getTask().setReport(null);
+        // Task는 Cascade.REMOVE로 자동 삭제됨
         // 리포트 삭제
         reportRepository.deleteById(report.getId());
         
