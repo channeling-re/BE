@@ -16,3 +16,8 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: 6379
+
+logging:
+  config: classpath:logback-spring.xml
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL}

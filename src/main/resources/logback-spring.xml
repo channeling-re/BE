@@ -3,14 +3,14 @@
     <!-- 로그 파일이 저장될 경로 설정 -->
     <property name="LOG_PATH" value="logs"/>
     <property name="LOG_FILE_NAME" value="channeling"/>
-    
+
     <!-- 콘솔 출력 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %cyan([%thread]) %highlight(%-5level) %yellow(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <!-- 전체 로그 파일 설정 -->
     <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/${LOG_FILE_NAME}-all.log</file>
@@ -24,7 +24,7 @@
             <totalSizeCap>2GB</totalSizeCap>
         </rollingPolicy>
     </appender>
-    
+
     <!-- Warning 이상 로그 파일 설정 -->
     <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/${LOG_FILE_NAME}-warn.log</file>
@@ -41,41 +41,67 @@
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
-    
+
     <!-- 개발 환경 설정 -->
     <springProfile name="!prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ALL_FILE"/>
             <appender-ref ref="WARN_FILE"/>
+
         </root>
         <!-- 개발 환경에서는 SQL 로그도 파일에 출력 -->
         <logger name="org.springframework.jdbc" level="DEBUG"/>
         <logger name="org.hibernate.SQL" level="DEBUG"/>
         <logger name="org.hibernate.type" level="TRACE"/>
     </springProfile>
-    
+
     <!-- 운영 환경 설정 -->
     <springProfile name="prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ALL_FILE"/>
             <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ASYNC_DISCORD"/>
         </root>
         <!-- 운영 환경에서는 보안상 민감한 로그 레벨 조정 -->
         <logger name="org.springframework.security" level="WARN"/>
         <logger name="org.springframework.web" level="WARN"/>
     </springProfile>
-    
+
     <!-- 애플리케이션 로거 설정 -->
     <logger name="channeling.be" level="INFO"/>
-    
+
     <!-- 예외 처리 관련 로거 -->
     <logger name="channeling.be.response.exception" level="DEBUG"/>
     <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="DEBUG"/>
-    
+
     <!-- 외부 라이브러리 로그 레벨 조정 -->
     <logger name="com.zaxxer.hikari" level="INFO"/>
     <logger name="org.springframework.boot.autoconfigure" level="INFO"/>
     <logger name="org.springframework.boot.web.embedded" level="INFO"/>
+
+    <!-- Discord Webhook URL (application-prod.yml 에서 읽음) -->
+    <springProperty name="DISCORD_WEBHOOK_URL" source="logging.discord.webhook-url"/>
+
+    <!-- Discord Appender -->
+    <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+        <webhookUri>${DISCORD_WEBHOOK_URL}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss} [%thread] [%-5level] %logger{36} - %msg%n```%ex{10}```</pattern>
+        </layout>
+        <username>에러핑...</username>
+        <avatarUrl>https://jjal.today/data/file/gallery/1889155643_NZHvkRLz_e0292b65bb682075bfdb752a4d8f4062f0b7738a.png</avatarUrl>
+        <tts>false</tts>
+    </appender>
+
+    <!-- 비동기 + ERROR 이상만 -->
+    <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DISCORD"/>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+
 </configuration>
